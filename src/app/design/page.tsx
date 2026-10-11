@@ -49,12 +49,12 @@ export default function DesignPage() {
   }, [phase.kind]);
 
   async function finish(product: Omit<GeneratedProduct, "categoryName" | "mesh" | "prompt">, item: CatalogItem, prompt: string) {
-    saveProduct({ ...product, categoryName: item.name, mesh: item.mesh, prompt });
+    saveProduct({ ...product, categoryName: item.name, mesh: item.mesh, world: item.world, prompt });
     router.push("/product");
   }
 
   async function showSaved() {
-    const res = await fetch("/demo/product.json");
+    const res = await fetch(selected?.world === "jewelry" ? "/demo/jewelry.json" : "/demo/product.json");
     if (!res.ok) return setPhase({ kind: "error", message: "Arcade is slow right now and there's no saved design yet. Try again in a minute." });
     const saved = (await res.json()) as GeneratedProduct;
     saveProduct({ ...saved, fallback: true });
@@ -71,7 +71,7 @@ export default function DesignPage() {
       return showSaved();
     }
     const inspirations = loadInspirations().slice(0, 3);
-    const prompt = buildPrompt(profile, selected.name, idea, inspirations.map((i) => i.label));
+    const prompt = buildPrompt(profile, selected.name, idea, inspirations.map((i) => i.label), selected.world);
     const startedAt = Date.now();
     setTick(0);
     setPhase({ kind: "generating", startedAt });
@@ -82,6 +82,7 @@ export default function DesignPage() {
         body: JSON.stringify({
           prompt,
           categoryId: selected.categoryId,
+          world: selected.world,
           referenceIds: inspirations.flatMap((i) => (i.referenceId ? [i.referenceId] : [])),
         }),
       }).then((r) => r.json());
@@ -164,30 +165,52 @@ export default function DesignPage() {
         </div>
       )}
 
-      <ul className="mt-6 grid grid-cols-2 gap-3">
-        {catalog === null &&
-          Array.from({ length: 6 }, (_, i) => <li key={i} className="h-40 animate-pulse rounded-2xl bg-line" />)}
-        {catalog?.map((item) => {
-          const active = selected?.categoryId === item.categoryId;
-          return (
-            <li key={item.categoryId}>
-              <button
-                type="button"
-                onClick={() => setSelected(item)}
-                aria-pressed={active}
-                className={`flex h-full w-full flex-col overflow-hidden rounded-2xl border-2 bg-white text-left transition active:scale-[0.98] ${active ? "border-ink shadow-[4px_4px_0_var(--ink)]" : "border-line"}`}
-              >
-                {item.imageUrl && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={item.imageUrl} alt="" className="aspect-[4/3] w-full object-cover" />
-                )}
-                <span className="px-3 pt-2 font-medium leading-tight">{item.name}</span>
-                <span className="px-3 pb-3 text-xs text-muted">{item.blurb}</span>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+      {catalog === null && (
+        <ul className="mt-6 grid grid-cols-2 gap-3">
+          {Array.from({ length: 6 }, (_, i) => (
+            <li key={i} className="h-40 animate-pulse rounded-2xl bg-line" />
+          ))}
+        </ul>
+      )}
+      {(["print", "jewelry"] as const).map((world) => {
+        const items = catalog?.filter((i) => i.world === world) ?? [];
+        if (!items.length) return null;
+        return (
+          <section key={world} className="mt-6">
+            <h2 className="text-xs font-semibold tracking-[0.2em] uppercase text-muted">{world === "print" ? "For your space" : "To wear"}</h2>
+            <ul className="mt-3 grid grid-cols-2 gap-3">
+              {items.map((item) => {
+                const active = selected?.categoryId === item.categoryId;
+                return (
+                  <li key={item.categoryId}>
+                    <button
+                      type="button"
+                      onClick={() => setSelected(item)}
+                      aria-pressed={active}
+                      className={`flex h-full w-full flex-col overflow-hidden rounded-2xl border-2 bg-white text-left transition active:scale-[0.98] ${active ? "border-ink shadow-[4px_4px_0_var(--ink)]" : "border-line"}`}
+                    >
+                      {item.imageUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={item.imageUrl} alt="" className="aspect-[4/3] w-full object-cover" />
+                      ) : (
+                        <span
+                          aria-hidden
+                          className="flex aspect-[4/3] w-full items-center justify-center text-4xl"
+                          style={{ background: `linear-gradient(135deg, ${profile.palette[0].hex}, ${profile.palette[2].hex})` }}
+                        >
+                          {item.emoji}
+                        </span>
+                      )}
+                      <span className="px-3 pt-2 font-medium leading-tight">{item.name}</span>
+                      <span className="px-3 pb-3 text-xs text-muted">{item.blurb}</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        );
+      })}
       {catalog?.length === 0 && (
         <p className="mt-4 text-sm text-muted">
           Couldn&rsquo;t reach Arcade&rsquo;s catalog.{" "}

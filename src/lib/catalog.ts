@@ -13,7 +13,16 @@ export const HOME_CATEGORIES: { name: string; mesh: MeshKind; blurb: string }[] 
   { name: "Drum Lampshades", mesh: "lampshade", blurb: "Pattern that glows at night" },
 ];
 
-export type CatalogItem = { categoryId: string; name: string; imageUrl: string | null; mesh: MeshKind; blurb: string };
+/** Jewelry Arcade designs and builds in one job from the prompt (no 3D room; it lives on you). */
+export const JEWELRY_CATEGORIES: { name: string; blurb: string; emoji: string }[] = [
+  { name: "Stud Earrings", blurb: "Small, daily, very you", emoji: "✨" },
+  { name: "Pendant Necklace", blurb: "Your aura on a chain", emoji: "📿" },
+  { name: "Dainty Gemstone Ring", blurb: "A stone in your palette", emoji: "💍" },
+  { name: "Dangle Earrings", blurb: "For main-character days", emoji: "🌙" },
+];
+
+export type World = "print" | "jewelry";
+export type CatalogItem = { categoryId: string; name: string; imageUrl: string | null; mesh: MeshKind | null; blurb: string; world: World; emoji?: string };
 
 /** A generated product as the client keeps it (localStorage + fallback JSON). */
 export type GeneratedProduct = {
@@ -21,7 +30,9 @@ export type GeneratedProduct = {
   patternId: string;
   title: string;
   categoryName: string;
-  mesh: MeshKind;
+  /** Null for jewelry, which has no room model. */
+  mesh: MeshKind | null;
+  world?: World;
   imageUrl: string;
   patternImageUrl: string;
   price: { amount: string; currency: string } | null;
@@ -36,7 +47,18 @@ export type GeneratedProduct = {
 const MAX_PROMPT = 600;
 
 /** Turn a style profile (plus an optional idea) into an Arcade pattern prompt. */
-export function buildPrompt(profile: StyleProfile, categoryName: string, idea?: string, inspiration?: string[]): string {
+export function buildPrompt(profile: StyleProfile, categoryName: string, idea?: string, inspiration?: string[], world: World = "print"): string {
+  if (world === "jewelry") {
+    // Arcade checks the prompt against the jewelry category, so name the piece plainly.
+    return [
+      idea?.trim() ? `${idea.trim()}.` : null,
+      `A ${categoryName.toLowerCase()} for someone whose style is "${profile.styleName}": ${profile.keywords.join(", ").toLowerCase()}`,
+      `inspired by a palette of ${profile.palette.slice(0, 3).map((s) => s.name.toLowerCase()).join(", ")}`,
+    ]
+      .filter(Boolean)
+      .join(", ")
+      .slice(0, MAX_PROMPT);
+  }
   const parts = [
     idea?.trim() ? `${idea.trim()}.` : null,
     `A ${profile.keywords.join(", ").toLowerCase()} pattern for ${categoryName.toLowerCase()} in the "${profile.styleName}" style`,
@@ -69,4 +91,12 @@ export function loadProduct(): GeneratedProduct | null {
   } catch {
     return null;
   }
+}
+
+/** Which pieces the live face try-on supports (rings would need hand tracking). */
+export function tryOnKind(name: string): "earrings" | "necklace" | null {
+  const n = name.toLowerCase();
+  if (n.includes("earring")) return "earrings";
+  if (n.includes("necklace") || n.includes("pendant")) return "necklace";
+  return null;
 }

@@ -1,0 +1,20 @@
+{
+  "productId": "57a1c9d1-8a7d-479c-a759-f7ff4378499e",
+  "patternId": "cmv4beoxy01qelm10qsa1t5tm",
+  "title": "14k Gold Vermeil Stud Earring",
+  "imageUrl": "/demo/jewelry.jpg",
+  "patternImageUrl": "/demo/jewelry.jpg",
+  "price": {
+    "amount": "324.00",
+    "currency": "USD"
+  },
+  "selectionLabel": "14k Gold Vermeil",
+  "selections": {
+    "material": "14k Gold Vermeil"
+  },
+  "careInstructions": "",
+  "categoryName": "Stud Earrings",
+  "mesh": null,
+  "world": "jewelry",
+  "prompt": "A stud earrings for someone whose style is \"Sunlit Archivist\": collected, sun-faded, storied, inspired by a palette of linen, terracotta, olive"
+}

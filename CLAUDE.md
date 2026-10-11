@@ -31,6 +31,7 @@ Cassius likes the current build: **extend it, don't rebuild or restyle it.** Wor
 | 6 | See it: 3D + AR Quick Look | **Done.** AR confirmed on iPhone; models built from Arcade selections | `src/components/product-viewer.tsx`, `src/lib/models.ts` |
 | 7 | One more thing: compass + location, SunCalc sun hours, time in space, lifecycle, recolor for sun resistance | **Isometric room flow live:** compass (N/E/S/W fallback), brightness/photo, wall color, year 1/3/5 fade. Missing: location/SunCalc, time in space, recolor | `/room`, `src/components/iso-room.tsx`, `src/lib/light.ts` |
 | 8 | Checkout | **Done** | `/api/arcade/checkout` |
+| + | Jewelry + live face try-on | **Done (2:16pm).** "To wear" section on `/design` (studs, pendant, gemstone ring, dangles from `categories/list`, `world: jewelry`, no references); `/tryon` uses MediaPipe Face Landmarker 1.0.1 (wasm from jsdelivr, model from Google storage) to pin the real Arcade photo, tight-cropped, to ears or below the chin; snap + share. Rings not supported (need hand tracking). Demo: `/demo/jewelry.json` (olive vermeil studs, $324). **Placement not yet checked on a real face.** | `/tryon`, `tryOnKind` in `src/lib/catalog.ts` |
 
 Extra (not in the journey): `/inspire` (barcode + photo → Arcade reference) could feed step 4 or the step 1 mood board.
 

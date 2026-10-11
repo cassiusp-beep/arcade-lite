@@ -5,7 +5,9 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const prompt = typeof body?.prompt === "string" ? body.prompt.trim().slice(0, 600) : "";
   const categoryId = typeof body?.categoryId === "string" ? body.categoryId : "";
-  const referenceIds = Array.isArray(body?.referenceIds)
+  const jewelry = body?.world === "jewelry";
+  // Arcade rejects references (and colors/model) for jewelry; it designs from the prompt alone.
+  const referenceIds = !jewelry && Array.isArray(body?.referenceIds)
     ? body.referenceIds.filter((r: unknown) => typeof r === "string").slice(0, 3)
     : [];
   if (!prompt || !categoryId) return Response.json({ error: "prompt and categoryId are required" }, { status: 400 });

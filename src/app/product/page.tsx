@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState, useSyncExternalStore } from "react";
-import { formatPrice, type GeneratedProduct } from "@/lib/catalog";
+import { formatPrice, tryOnKind, type GeneratedProduct } from "@/lib/catalog";
 
 const KEY = "arcade-lite:product";
 const subscribe = (cb: () => void) => {
@@ -84,12 +84,22 @@ export default function ProductPage() {
       )}
 
       <div className="mt-auto flex flex-col gap-3 pt-8">
-        <Link
-          href="/room"
-          className="flex h-14 items-center justify-center rounded-full border-2 border-ink text-base font-semibold transition-transform active:scale-[0.98]"
-        >
-          See it in my room
-        </Link>
+        {product.world === "jewelry" && tryOnKind(product.categoryName) && (
+          <Link
+            href="/tryon"
+            className="flex h-14 items-center justify-center rounded-full border-2 border-ink text-base font-semibold transition-transform active:scale-[0.98]"
+          >
+            Try it on
+          </Link>
+        )}
+        {product.mesh && (
+          <Link
+            href="/room"
+            className="flex h-14 items-center justify-center rounded-full border-2 border-ink text-base font-semibold transition-transform active:scale-[0.98]"
+          >
+            See it in my room
+          </Link>
+        )}
         <button
           type="button"
           onClick={buy}

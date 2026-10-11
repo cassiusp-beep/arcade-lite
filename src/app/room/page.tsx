@@ -83,7 +83,7 @@ export default function RoomPage() {
 
   useEffect(() => () => stopCompass.current?.(), []);
 
-  if (!product) {
+  if (!product || !product.mesh) {
     return (
       <main className="mx-auto flex w-full max-w-xl flex-1 flex-col justify-center px-5 text-center">
         <h1 className="font-display text-4xl">Design something first.</h1>
@@ -287,7 +287,7 @@ export default function RoomPage() {
             <p className="mt-1 text-xs text-muted">A projection from your window and light, not a lab test.</p>
 
             <div className="mt-4">
-              <ProductViewer mesh={product.mesh} patternUrl={product.patternImageUrl} selections={product.selections} light={viewerLight(room)} alt={product.title} />
+              <ProductViewer mesh={product.mesh!} patternUrl={product.patternImageUrl} selections={product.selections} light={viewerLight(room)} alt={product.title} />
             </div>
           </>
         )}
