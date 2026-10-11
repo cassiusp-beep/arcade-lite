@@ -35,7 +35,7 @@ Return:
 - weights: 1 or 2 of these style archetypes with scores 1 to 3: sunlit-archivist (vintage, warm), neon-maximalist (loud, color), quiet-luxe (minimal, calm), salt-air-romantic (breezy, coastal), midnight-scholar (moody, literary), wild-botanist (earthy, plants).`;
 
   try {
-    const vibe = sanitizeVibe(await geminiJson(prompt, SCHEMA, 7000));
+    const vibe = sanitizeVibe(await geminiJson(prompt, SCHEMA, 5000));
     if (vibe) return Response.json(vibe);
   } catch {
     // Free-tier limit, timeout or bad output: the curated map keeps the step working.
