@@ -15,6 +15,26 @@ Shoppers miss having a stylist or store associate help them decide, and many don
 - **Arcade:** read `docs/context/arcade.md` first. Use the `arcade-api` skill for endpoint details and `arcade-api-test-drive` for key and safety rules.
 - **Process docs:** `docs/process/` holds the design principles, features, references, visual spec, anti-slop rules, voice and tone, research plan, and demo script. Sections still in template form mean "not yet defined": ask the human rather than inventing answers.
 - **Build order:** see `docs/context/arcade.md` § Build order. Do not start a step until the previous one works end to end.
+- **Deadlines:** submission ~3:00pm PT (hard). Building continues until ~5:30pm PT.
+
+## The Journey (source of truth; status as of 1:50pm)
+
+Cassius likes the current build: **extend it, don't rebuild or restyle it.** Work one integration at a time in this order. For each, offer 2–3 ways to combine with what exists (recommendation + time), wait for approval, then update this section once it works. Every step keeps a `?demo=1` fallback. New keys stay server-side behind our own `/api` routes.
+
+| # | Step | Status | Where |
+|---|---|---|---|
+| 1 | Vibe check: 10 generated Y2K/pop-culture questions, live aura card, skippable | Hand-written 7-question quiz exists (becomes the fallback) | `/quiz`, `src/lib/quiz/*` |
+| 2 | Soundtrack: 1–2 artists or a playlist; Spotify/Apple Music buttons are visual only | Not started | none yet |
+| 3 | Style profile: quiz + music → name, palette, keywords, design direction; shareable | Card, share link, OG image exist | `/profile`, `src/lib/profile.ts`, `/api/card` |
+| 4 | The ask: "what, and where in your space" + Surprise me (voice is a stretch) | Category grid + idea text exist | `/design`, `buildPrompt` in `src/lib/catalog.ts` |
+| 5 | Design: generate, crop, make seamless, refine, confirm | Generate/poll/product work; refine not started | `/api/arcade/*`, `/product` |
+| 6 | See it: 3D + AR Quick Look | **Done.** AR confirmed on iPhone; models built from Arcade selections | `src/components/product-viewer.tsx`, `src/lib/models.ts` |
+| 7 | One more thing: compass + location, SunCalc sun hours, time in space, lifecycle, recolor for sun resistance | **Isometric room flow live:** compass (N/E/S/W fallback), brightness/photo, wall color, year 1/3/5 fade. Missing: location/SunCalc, time in space, recolor | `/room`, `src/components/iso-room.tsx`, `src/lib/light.ts` |
+| 8 | Checkout | **Done** | `/api/arcade/checkout` |
+
+Extra (not in the journey): `/inspire` (barcode + photo → Arcade reference) could feed step 4 or the step 1 mood board.
+
+User feedback to address in step 4: patterns felt "too on the nose" (picked beach → got a beach print). Make the pattern direction more radical/unexpected.
 
 ## The Team
 

@@ -1,10 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useRef, useState, useSyncExternalStore } from "react";
-import { ProductViewer } from "@/components/product-viewer";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { IsoRoom } from "@/components/iso-room";
+import { ProductViewer, textureUrl } from "@/components/product-viewer";
 import { formatPrice, type GeneratedProduct } from "@/lib/catalog";
-import { estimateFromPixels, lightAdvice, viewerLight, type Brightness, type Facing, type RoomLight, type WindowSize } from "@/lib/light";
+import {
+  estimateFromPixels,
+  facingFromHeading,
+  fadeFilter,
+  lightAdvice,
+  projectedFade,
+  sunExposure,
+  viewerLight,
+  type Brightness,
+  type Facing,
+  type RoomLight,
+} from "@/lib/light";
 
 const KEY = "arcade-lite:product";
 const subscribe = (cb: () => void) => {
@@ -19,31 +31,57 @@ const read = () => {
   }
 };
 
-const SIZES: { id: WindowSize; label: string }[] = [
-  { id: "small", label: "Small" },
-  { id: "medium", label: "Regular" },
-  { id: "wall", label: "Wall of glass" },
-];
 const FACINGS: { id: Facing; label: string }[] = [
-  { id: "north", label: "North" },
-  { id: "east", label: "East" },
-  { id: "south", label: "South" },
-  { id: "west", label: "West" },
+  { id: "north", label: "N" },
+  { id: "east", label: "E" },
+  { id: "south", label: "S" },
+  { id: "west", label: "W" },
 ];
 const BRIGHTNESS: { id: Brightness; label: string }[] = [
   { id: "dim", label: "Cozy dim" },
   { id: "bright", label: "Bright" },
   { id: "sunny", label: "Sun-drenched" },
 ];
+const WALLS = [
+  { hex: "#f4efe6", name: "Paper" },
+  { hex: "#dfe7d6", name: "Sage" },
+  { hex: "#f1d7c8", name: "Blush" },
+  { hex: "#d6e2ef", name: "Sky" },
+  { hex: "#3b3a4a", name: "Ink" },
+  { hex: "#e8c98a", name: "Ochre" },
+];
+const SUN_LEVEL = { low: 0.25, medium: 0.55, high: 0.9 } as const;
+const STEPS = ["window", "light", "walls", "lifecycle"] as const;
+type Step = (typeof STEPS)[number];
+
+const DEMO: { room: RoomLight; wall: string } = { room: { windowSize: "medium", facing: "west", brightness: "sunny" }, wall: "#dfe7d6" };
+
+type Compass = { state: "idle" } | { state: "reading"; heading: number | null } | { state: "unavailable"; reason: string };
 
 export default function RoomPage() {
   const raw = useSyncExternalStore(subscribe, read, () => null);
   const product = useMemo(() => (raw ? (JSON.parse(raw) as GeneratedProduct) : null), [raw]);
-  const [room, setRoom] = useState<RoomLight>({ windowSize: "medium", facing: "south", brightness: "bright" });
+  const [step, setStep] = useState<Step>("window");
+  const [facing, setFacing] = useState<Facing | null>(null);
+  const [brightness, setBrightness] = useState<Brightness>("bright");
+  const [warmth, setWarmth] = useState<number | undefined>(undefined);
+  const [wall, setWall] = useState(WALLS[0].hex);
+  const [compass, setCompass] = useState<Compass>({ state: "idle" });
   const [photoNote, setPhotoNote] = useState<string | null>(null);
   const [buying, setBuying] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
-  const light = viewerLight(room);
+  const stopCompass = useRef<(() => void) | null>(null);
+
+  // ?demo=1 presets every answer so the presenter just taps through.
+  useEffect(() => {
+    if (new URLSearchParams(location.search).get("demo") !== "1") return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time read of the URL on mount
+    setFacing(DEMO.room.facing);
+    setBrightness(DEMO.room.brightness);
+    setWall(DEMO.wall);
+  }, []);
+
+  useEffect(() => () => stopCompass.current?.(), []);
 
   if (!product) {
     return (
@@ -56,19 +94,54 @@ export default function RoomPage() {
     );
   }
 
+  const room: RoomLight = { windowSize: "medium", facing: facing ?? "south", brightness, warmth };
+  const exposure = sunExposure(room);
+  const sun = facing === "north" ? 0.15 : SUN_LEVEL[exposure];
+  const stepIndex = STEPS.indexOf(step);
+  const patternSrc = textureUrl(product.patternImageUrl);
+
+  async function startCompass() {
+    type IOSOrientation = typeof DeviceOrientationEvent & { requestPermission?: () => Promise<"granted" | "denied"> };
+    const DOE = (typeof DeviceOrientationEvent !== "undefined" ? DeviceOrientationEvent : undefined) as IOSOrientation | undefined;
+    if (!DOE) return setCompass({ state: "unavailable", reason: "No compass on this device. Tap a direction instead." });
+    try {
+      // iOS needs permission from a tap.
+      if (typeof DOE.requestPermission === "function" && (await DOE.requestPermission()) !== "granted") {
+        return setCompass({ state: "unavailable", reason: "Compass access was declined. Tap a direction instead." });
+      }
+    } catch {
+      return setCompass({ state: "unavailable", reason: "Compass isn't available here. Tap a direction instead." });
+    }
+    setCompass({ state: "reading", heading: null });
+    const onOrient = (e: DeviceOrientationEvent & { webkitCompassHeading?: number }) => {
+      const heading = e.webkitCompassHeading ?? (e.absolute && e.alpha !== null ? 360 - e.alpha : null);
+      if (heading !== null && heading !== undefined) setCompass({ state: "reading", heading });
+    };
+    const eventName = "ondeviceorientationabsolute" in window ? "deviceorientationabsolute" : "deviceorientation";
+    window.addEventListener(eventName, onOrient as EventListener);
+    stopCompass.current = () => window.removeEventListener(eventName, onOrient as EventListener);
+    setTimeout(() => setCompass((c) => (c.state === "reading" && c.heading === null ? { state: "unavailable", reason: "No compass reading. Tap a direction instead." } : c)), 2500);
+  }
+
+  function lockCompass() {
+    if (compass.state !== "reading" || compass.heading === null) return;
+    setFacing(facingFromHeading(compass.heading));
+    stopCompass.current?.();
+    setCompass({ state: "idle" });
+  }
+
   async function readPhoto(file: File) {
     const bitmap = await createImageBitmap(file);
     const canvas = document.createElement("canvas");
-    canvas.width = 64;
-    canvas.height = 64;
+    canvas.width = canvas.height = 64;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     ctx.drawImage(bitmap, 0, 0, 64, 64);
-    const { brightness, warmth } = estimateFromPixels(ctx.getImageData(0, 0, 64, 64).data);
-    setRoom((r) => ({ ...r, brightness, warmth }));
-    const tone = warmth > 0.08 ? "warm" : warmth < -0.03 ? "cool" : "neutral";
-    const label = BRIGHTNESS.find((b) => b.id === brightness)!.label;
-    setPhotoNote(`Measured ${label.toLowerCase()}, ${tone} light. We set "${label}" below and tinted the preview to match.`);
+    const est = estimateFromPixels(ctx.getImageData(0, 0, 64, 64).data);
+    setBrightness(est.brightness);
+    setWarmth(est.warmth);
+    const tone = est.warmth > 0.08 ? "warm" : est.warmth < -0.03 ? "cool" : "neutral";
+    setPhotoNote(`Measured ${BRIGHTNESS.find((b) => b.id === est.brightness)!.label.toLowerCase()}, ${tone} light. The photo stays on your phone.`);
   }
 
   async function buy() {
@@ -84,92 +157,175 @@ export default function RoomPage() {
     else setBuying(false);
   }
 
-  return (
-    <main className="mx-auto flex w-full max-w-xl flex-1 flex-col px-5 pt-[max(1.5rem,env(safe-area-inset-top))] pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-      <Link href="/product" className="-ml-2 flex h-11 w-11 items-center justify-center rounded-full text-xl" aria-label="Back to product">
-        ←
-      </Link>
-      <p className="mt-2 text-xs font-medium tracking-[0.2em] uppercase text-accent">Your room, your light</p>
-      <h1 className="mt-2 font-display text-[2rem] leading-[1.05] tracking-tight">How will it look at home?</h1>
+  const canNext = step !== "window" || facing !== null;
+  const item = product.categoryName.toLowerCase();
 
-      <div className="mt-5">
-        <ProductViewer mesh={product.mesh} patternUrl={product.patternImageUrl} selections={product.selections} light={light} alt={product.title} />
+  return (
+    <main className="mx-auto flex w-full max-w-xl flex-1 flex-col px-5 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+      <header className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => (stepIndex === 0 ? history.back() : setStep(STEPS[stepIndex - 1]))}
+          className="-ml-2 flex h-11 w-11 items-center justify-center rounded-full text-xl"
+          aria-label="Back"
+        >
+          ←
+        </button>
+        <div className="flex flex-1 gap-1.5" aria-label={`Step ${stepIndex + 1} of ${STEPS.length}`}>
+          {STEPS.map((s, i) => (
+            <span key={s} className={`h-1 flex-1 rounded-full transition-colors duration-300 ${i <= stepIndex ? "bg-ink" : "bg-line"}`} />
+          ))}
+        </div>
+      </header>
+
+      {/* The room stays on screen and builds itself as you answer. */}
+      <div className="sticky top-0 z-10 -mx-5 bg-paper/95 px-5 pt-2 pb-1 backdrop-blur">
+        <IsoRoom facing={facing} sun={sun} wall={wall} patternUrl={patternSrc} productFilter={step === "lifecycle" ? fadeFilter(projectedFade(room, 3)) : undefined} />
       </div>
 
-      <p className="mt-4 rounded-2xl bg-white p-4 text-[0.95rem] leading-snug" aria-live="polite">
-        <span className="font-semibold">In your light: </span>
-        {lightAdvice(room, product.categoryName)}
-      </p>
-
-      <section className="mt-5 rounded-2xl border border-dashed border-ink p-4">
-        <h2 className="font-semibold">Let your room tell us</h2>
-        <p className="mt-1 text-sm leading-snug text-muted">
-          Take one photo of the room in daylight. We measure how bright and how warm the light is and fill in the answer for you.
-          The photo never leaves your phone.
-        </p>
-        <input ref={fileRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => e.target.files?.[0] && readPhoto(e.target.files[0])} />
-        <button type="button" onClick={() => fileRef.current?.click()} className="mt-3 flex h-12 w-full items-center justify-center rounded-full bg-ink text-sm font-semibold text-paper">
-          {photoNote ? "Take another photo" : "Read my light from a photo"}
-        </button>
-        {photoNote && (
-          <p className="mt-2 text-sm" aria-live="polite">
-            {photoNote}
-          </p>
+      <section key={step} className="flex flex-1 flex-col pt-3 animate-rise">
+        {step === "window" && (
+          <>
+            <p className="text-xs font-medium tracking-[0.2em] uppercase text-accent">Natural light</p>
+            <h1 className="mt-2 font-display text-[1.9rem] leading-[1.05] tracking-tight">Which way does your window face?</h1>
+            {compass.state === "reading" ? (
+              <div className="mt-4 rounded-2xl bg-white p-4 text-center">
+                <p className="text-sm text-muted">Hold your phone flat and point the top at your window.</p>
+                <p className="mt-2 font-display text-4xl">
+                  {compass.heading === null ? "…" : `${Math.round(compass.heading)}° ${facingFromHeading(compass.heading)[0].toUpperCase()}`}
+                </p>
+                <button type="button" onClick={lockCompass} disabled={compass.heading === null} className="mt-3 h-12 w-full rounded-full bg-ink font-semibold text-paper disabled:opacity-50">
+                  That&rsquo;s my window
+                </button>
+              </div>
+            ) : (
+              <button type="button" onClick={startCompass} className="mt-4 h-14 rounded-full bg-ink text-base font-semibold text-paper active:scale-[0.98]">
+                Use my phone&rsquo;s compass
+              </button>
+            )}
+            {compass.state === "unavailable" && <p className="mt-2 text-sm text-muted">{compass.reason}</p>}
+            <p className="mt-4 text-sm text-muted">Or tap it:</p>
+            <div className="mt-2 grid grid-cols-4 gap-2">
+              {FACINGS.map((f) => (
+                <Chip key={f.id} active={facing === f.id} onClick={() => setFacing(f.id)} label={`Window faces ${f.id}`}>
+                  {f.label}
+                </Chip>
+              ))}
+            </div>
+          </>
         )}
+
+        {step === "light" && (
+          <>
+            <p className="text-xs font-medium tracking-[0.2em] uppercase text-accent">How much light</p>
+            <h1 className="mt-2 font-display text-[1.9rem] leading-[1.05] tracking-tight">On a clear afternoon, it&rsquo;s…</h1>
+            <div className="mt-4 grid grid-cols-3 gap-2">
+              {BRIGHTNESS.map((b) => (
+                <Chip
+                  key={b.id}
+                  active={brightness === b.id}
+                  onClick={() => {
+                    setBrightness(b.id);
+                    setWarmth(undefined);
+                  }}
+                >
+                  {b.label}
+                </Chip>
+              ))}
+            </div>
+            <input ref={fileRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => e.target.files?.[0] && readPhoto(e.target.files[0])} />
+            <button type="button" onClick={() => fileRef.current?.click()} className="mt-4 h-12 rounded-full border-2 border-ink text-sm font-semibold">
+              Not sure? Snap the room and we&rsquo;ll measure it
+            </button>
+            {photoNote && <p className="mt-2 text-sm">{photoNote}</p>}
+          </>
+        )}
+
+        {step === "walls" && (
+          <>
+            <p className="text-xs font-medium tracking-[0.2em] uppercase text-accent">Wall color</p>
+            <h1 className="mt-2 font-display text-[1.9rem] leading-[1.05] tracking-tight">What color are your walls?</h1>
+            <div className="mt-4 grid grid-cols-3 gap-3">
+              {WALLS.map((w) => (
+                <button
+                  key={w.hex}
+                  type="button"
+                  onClick={() => setWall(w.hex)}
+                  aria-pressed={wall === w.hex}
+                  className={`flex h-16 items-end rounded-2xl border-2 p-2 text-xs font-semibold transition active:scale-[0.97] ${wall === w.hex ? "border-ink shadow-[3px_3px_0_var(--ink)]" : "border-line"}`}
+                  style={{ background: w.hex, color: w.name === "Ink" ? "#fff" : "var(--ink)" }}
+                >
+                  {w.name}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
+        {step === "lifecycle" && (
+          <>
+            <p className="text-xs font-medium tracking-[0.2em] uppercase text-accent">Lifecycle of your {item}</p>
+            <h1 className="mt-2 font-display text-[1.9rem] leading-[1.05] tracking-tight">How it ages in your light</h1>
+            <div className="mt-4 grid grid-cols-3 gap-2">
+              {[1, 3, 5].map((y) => (
+                <figure key={y}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={patternSrc}
+                    alt={`Your print after ${y} year${y > 1 ? "s" : ""}`}
+                    className="aspect-square w-full rounded-xl border border-line object-cover transition-[filter] duration-500"
+                    style={{ filter: fadeFilter(projectedFade(room, y)) }}
+                  />
+                  <figcaption className="mt-1 text-center text-xs font-medium">Year {y}</figcaption>
+                </figure>
+              ))}
+            </div>
+            <p className="mt-3 rounded-2xl bg-white p-4 text-[0.95rem] leading-snug">
+              <span className="font-semibold">In your light: </span>
+              {lightAdvice(room, product.categoryName)}
+            </p>
+            <p className="mt-1 text-xs text-muted">A projection from your window and light, not a lab test.</p>
+
+            <div className="mt-4">
+              <ProductViewer mesh={product.mesh} patternUrl={product.patternImageUrl} selections={product.selections} light={viewerLight(room)} alt={product.title} />
+            </div>
+          </>
+        )}
+
+        <div className="mt-auto pt-6">
+          {step === "lifecycle" ? (
+            <button
+              type="button"
+              onClick={buy}
+              disabled={buying}
+              className="flex h-14 w-full items-center justify-center rounded-full bg-accent text-base font-semibold text-white active:scale-[0.98] disabled:opacity-60"
+            >
+              {buying ? "Opening checkout…" : `Love it as is · ${formatPrice(product.price)}`}
+            </button>
+          ) : (
+            <button
+              type="button"
+              disabled={!canNext}
+              onClick={() => setStep(STEPS[stepIndex + 1])}
+              className="flex h-14 w-full items-center justify-center rounded-full bg-ink text-base font-semibold text-paper active:scale-[0.98] disabled:bg-line disabled:text-muted"
+            >
+              {canNext ? "Next" : "Pick a direction"}
+            </button>
+          )}
+        </div>
       </section>
-
-      <p className="mt-5 text-sm text-muted">Or tell us yourself. Window direction is the one thing a photo can&rsquo;t know.</p>
-      <Question label="Your main window">
-        {SIZES.map((o) => (
-          <Chip key={o.id} active={room.windowSize === o.id} onClick={() => setRoom({ ...room, windowSize: o.id })}>
-            {o.label}
-          </Chip>
-        ))}
-      </Question>
-      <Question label="It faces">
-        {FACINGS.map((o) => (
-          <Chip key={o.id} active={room.facing === o.id} onClick={() => setRoom({ ...room, facing: o.id })}>
-            {o.label}
-          </Chip>
-        ))}
-      </Question>
-      <Question label="On a clear afternoon it's">
-        {BRIGHTNESS.map((o) => (
-          <Chip key={o.id} active={room.brightness === o.id} onClick={() => setRoom({ ...room, brightness: o.id, warmth: undefined })}>
-            {o.label}
-          </Chip>
-        ))}
-      </Question>
-
-
-      <button
-        type="button"
-        onClick={buy}
-        disabled={buying}
-        className="mt-8 flex h-14 items-center justify-center rounded-full bg-accent text-base font-semibold text-white transition-transform active:scale-[0.98] disabled:opacity-60"
-      >
-        {buying ? "Opening checkout…" : `Love it · Buy for ${formatPrice(product.price)}`}
-      </button>
     </main>
   );
 }
 
-function Question({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <fieldset className="mt-5">
-      <legend className="text-sm font-medium">{label}</legend>
-      <div className="mt-2 flex flex-wrap gap-2">{children}</div>
-    </fieldset>
-  );
-}
-
-function Chip({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function Chip({ active, onClick, children, label }: { active: boolean; onClick: () => void; children: React.ReactNode; label?: string }) {
   return (
     <button
       type="button"
       aria-pressed={active}
+      aria-label={label}
       onClick={onClick}
-      className={`h-11 rounded-full border px-4 text-sm font-medium transition active:scale-[0.97] ${active ? "border-ink bg-ink text-paper" : "border-line bg-white"}`}
+      className={`h-12 rounded-full border px-3 text-sm font-semibold transition active:scale-[0.97] ${active ? "border-ink bg-ink text-paper" : "border-line bg-white"}`}
     >
       {children}
     </button>

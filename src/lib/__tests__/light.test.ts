@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { estimateFromPixels, lightAdvice, sunExposure, viewerLight } from "../light";
+import { estimateFromPixels, facingFromHeading, lightAdvice, projectedFade, sunExposure, viewerLight } from "../light";
 
 describe("room light", () => {
   it("rates a big sunny west window as high sun exposure", () => {
@@ -27,5 +27,23 @@ describe("room light", () => {
     expect(estimateFromPixels(px(20, 20, 20)).brightness).toBe("dim");
     expect(estimateFromPixels(px(240, 230, 210)).brightness).toBe("sunny");
     expect(estimateFromPixels(px(220, 160, 90)).warmth).toBeGreaterThan(0);
+  });
+});
+
+describe("lifecycle", () => {
+  it("rounds compass headings to the nearest facing", () => {
+    expect(facingFromHeading(0)).toBe("north");
+    expect(facingFromHeading(100)).toBe("east");
+    expect(facingFromHeading(190)).toBe("south");
+    expect(facingFromHeading(-80)).toBe("west");
+    expect(facingFromHeading(350)).toBe("north");
+  });
+
+  it("fades faster in sunnier rooms and grows with years", () => {
+    const sunny = { windowSize: "wall", facing: "west", brightness: "sunny" } as const;
+    const shady = { windowSize: "small", facing: "north", brightness: "dim" } as const;
+    expect(projectedFade(sunny, 5)).toBeGreaterThan(projectedFade(shady, 5));
+    expect(projectedFade(sunny, 5)).toBeGreaterThan(projectedFade(sunny, 1));
+    expect(projectedFade(sunny, 50)).toBeLessThanOrEqual(0.85);
   });
 });

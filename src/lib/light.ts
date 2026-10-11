@@ -73,3 +73,23 @@ export function estimateFromPixels(data: Uint8ClampedArray): { brightness: Brigh
   const warmth = (r - b) / n / 255; // >0 warm, <0 cool
   return { brightness: avg < 85 ? "dim" : avg < 160 ? "bright" : "sunny", warmth: Math.round(warmth * 100) / 100 };
 }
+
+/** Compass heading (0 = north, clockwise) → nearest window facing. */
+export function facingFromHeading(deg: number): Facing {
+  const d = ((deg % 360) + 360) % 360;
+  return (["north", "east", "south", "west"] as const)[Math.round(d / 90) % 4];
+}
+
+/**
+ * Projected print fade after `years` in this light: 0 = like new, 1 = washed out.
+ * An estimate for the lifecycle preview, not a lab measurement.
+ */
+const FADE_PER_YEAR = { low: 0.025, medium: 0.06, high: 0.11 } as const;
+export function projectedFade(room: RoomLight, years: number): number {
+  return Math.min(0.85, FADE_PER_YEAR[sunExposure(room)] * years);
+}
+
+/** CSS filter that simulates sun fading: colors desaturate, lift and warm slightly. */
+export function fadeFilter(fade: number): string {
+  return `saturate(${(1 - fade).toFixed(2)}) brightness(${(1 + fade * 0.18).toFixed(2)}) sepia(${(fade * 0.25).toFixed(2)}) contrast(${(1 - fade * 0.3).toFixed(2)})`;
+}
