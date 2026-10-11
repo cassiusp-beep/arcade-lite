@@ -21,12 +21,12 @@ The judges keep these loose on purpose. Defining them sharply is part of the sco
 |---|---|---|---|
 | **Who the customer is** | One specific person with a specific moment of doubt: *"shoppers who miss a stylist and don't trust their own taste enough to design a product."* Named in the README, the first demo sentence, and the UI copy | 2 | Gen Z, chronically online, misses a stylist. In README + landing. Needs the first demo sentence. |
 | **How the API is used** | Arcade is the core of the product, not a bolt-on. Shows prompt built from the style profile → pattern → product → price → checkout URL. Uses at least one thing beyond the basic call (references from inspiration, recolor to the palette, category choice) | 3 | Profile → prompt → `patterns/create` with categoryId → `jobs/get` → `products/get` selections drive 3D/AR → `checkouts/create`; references from in-store inspiration. Recolor not yet. |
-| **Shopping 3.0 angle** | Clearly new versus a catalog with filters. The shopper goes from *finding* to *deciding*, and the app acts as the stylist | 2 | Stylist that learns taste from real life + music, then shows it in your space and light. Say "finding → deciding" out loud in the demo. |
+| **Shopping 3.0 angle** | Clearly new versus a catalog with filters. The shopper goes from *finding* to *deciding*, and the app acts as the stylist | 3 | Stylist that learns taste from real life + music, writes a sideways design direction, designs home and jewelry with Arcade, then shows it on you (face try-on) or in your space and light. Say "finding → deciding" out loud. |
 | **Demo quality** | 2–3 minutes, one wow moment (profile reveal or seeing it in your room), never stalls | 1 | Not rehearsed yet. Gemini free tier is flaky: use `?demo=1`. |
 | **Craft** | Mobile-first, passes `docs/process/anti-slop.md`, loading and error states designed | 2 | Mobile-first, editorial, designed loading/error states, 3D matches the product photo. Some screens untested on a real phone (inspire, compass). |
 | **Completeness of the core path** | Quiz → product → checkout works end to end for a stranger | 3 | Quiz → soundtrack → profile → Arcade product → 3D/AR (confirmed on iPhone) → light room → checkout link. |
 
-**Total:** 13 / 18 · **Gates passed:** 3 / 4 (as of 2:05pm)
+**Total:** 14 / 18 · **Gates passed:** 3 / 4 (as of 2:30pm)
 
 ## Self-ranking log
 
