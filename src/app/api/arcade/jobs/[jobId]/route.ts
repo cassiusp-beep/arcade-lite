@@ -9,7 +9,13 @@ export async function GET(_request: Request, { params }: RouteContext<"/api/arca
     if (job.status === "failed") return Response.json({ status: "failed", error: job.error?.message ?? "Generation failed" });
 
     const productId = job.result?.productId;
-    if (!productId) return Response.json({ status: "failed", error: "Arcade finished without a product" });
+    if (!productId) {
+      // Pattern-only jobs (e.g. a recolor) return the new pattern and its image.
+      const patternId = job.result?.patternId;
+      if (!patternId) return Response.json({ status: "failed", error: "Arcade finished without a result" });
+      const pattern = await arcade<ArcadePattern>("patterns/get", { patternId });
+      return Response.json({ status: "succeeded", pattern: { patternId, imageUrl: pattern.imageUrl } });
+    }
 
     const product = await arcade<ArcadeProduct>("products/get", { productId });
     const pattern = await arcade<ArcadePattern>("patterns/get", { patternId: product.patternId }).catch(() => null);
@@ -19,6 +25,7 @@ export async function GET(_request: Request, { params }: RouteContext<"/api/arca
         productId: product.productId,
         patternId: product.patternId,
         title: product.title,
+        categoryId: product.categoryId,
         imageUrl: product.imageUrl,
         patternImageUrl: pattern?.imageUrl ?? product.imageUrl,
         price: product.unitPrice,

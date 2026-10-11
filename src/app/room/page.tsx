@@ -5,11 +5,12 @@ import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "reac
 import { IsoRoom } from "@/components/iso-room";
 import { yearlySunHours } from "@/lib/sun";
 import { ProductViewer, textureUrl } from "@/components/product-viewer";
-import { formatPrice, type GeneratedProduct } from "@/lib/catalog";
+import { formatPrice, saveProduct, type GeneratedProduct } from "@/lib/catalog";
 import {
   estimateFromPixels,
   facingFromHeading,
   fadeFilter,
+  SUN_SMART_FADE,
   lightAdvice,
   projectedFade,
   sunExposure,
@@ -70,7 +71,11 @@ type Compass = { state: "idle" } | { state: "reading"; heading: number | null } 
 
 export default function RoomPage() {
   const raw = useSyncExternalStore(subscribe, read, () => null);
-  const product = useMemo(() => (raw ? (JSON.parse(raw) as GeneratedProduct) : null), [raw]);
+  const stored = useMemo(() => (raw ? (JSON.parse(raw) as GeneratedProduct) : null), [raw]);
+  // "Make it last" swaps in the sun-smart version without a reload.
+  const [override, setOverride] = useState<GeneratedProduct | null>(null);
+  const product = override ?? stored;
+  const [lasting, setLasting] = useState<{ state: "idle" | "recolor" | "build" | "error"; message?: string }>({ state: "idle" });
   const [step, setStep] = useState<Step>("place");
   const [place, setPlace] = useState<Place | null>(null);
   const [locating, setLocating] = useState<string | null>(null);
@@ -176,6 +181,49 @@ export default function RoomPage() {
     setPhotoNote(`Measured ${BRIGHTNESS.find((b) => b.id === est.brightness)!.label.toLowerCase()}, ${tone} light. The photo stays on your phone.`);
   }
 
+  /** Fade for year y, eased when the colorway is sun-smart (muted tones show fading less). */
+  const fadeAt = (y: number) => projectedFade(room, y) * (product!.sunSmart ? SUN_SMART_FADE : 1);
+
+  async function makeItLast() {
+    const p = product!;
+    const poll = async (jobId: string) => {
+      for (;;) {
+        await new Promise((r) => setTimeout(r, 3000));
+        const j = await fetch(`/api/arcade/jobs/${jobId}`).then((r) => r.json()).catch(() => ({ status: "running" }));
+        if (j.status !== "running") return j;
+      }
+    };
+    try {
+      setLasting({ state: "recolor" });
+      if (new URLSearchParams(location.search).get("demo") === "1") {
+        await new Promise((r) => setTimeout(r, 4000));
+        const saved = (await fetch("/demo/product-sunsmart.json").then((r) => r.json())) as GeneratedProduct;
+        saveProduct(saved);
+        setOverride(saved);
+        return setLasting({ state: "idle" });
+      }
+      const rc = await fetch("/api/arcade/recolor", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ patternId: p.patternId }) }).then((r) => r.json());
+      if (!rc.jobId) throw new Error(rc.error ?? "Recolor didn't start");
+      const pj = await poll(rc.jobId);
+      if (!pj.pattern) throw new Error(pj.error ?? "Recolor failed");
+      setLasting({ state: "build" });
+      const pr = await fetch("/api/arcade/product", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ patternId: pj.pattern.patternId, categoryId: p.categoryId, selections: p.selections }),
+      }).then((r) => r.json());
+      if (!pr.jobId) throw new Error(pr.error ?? "Couldn't build the new version");
+      const job = await poll(pr.jobId);
+      if (job.status !== "succeeded") throw new Error(job.error ?? "Couldn't build the new version");
+      const next: GeneratedProduct = { ...p, ...job.product, sunSmart: true, fallback: false };
+      saveProduct(next);
+      setOverride(next);
+      setLasting({ state: "idle" });
+    } catch (err) {
+      setLasting({ state: "error", message: err instanceof Error ? err.message : "Something went wrong" });
+    }
+  }
+
   async function buy() {
     setBuying(true);
     const res = await fetch("/api/arcade/checkout", {
@@ -216,7 +264,7 @@ export default function RoomPage() {
 
       {/* The room stays on screen and builds itself as you answer. */}
       <div className="sticky top-0 z-10 -mx-5 bg-paper/95 px-5 pt-2 pb-1 backdrop-blur">
-        <IsoRoom facing={facing} sun={sun} wall={wall} patternUrl={patternSrc} productFilter={step === "lifecycle" ? fadeFilter(projectedFade(room, 3)) : undefined} />
+        <IsoRoom facing={facing} sun={sun} wall={wall} patternUrl={patternSrc} productFilter={step === "lifecycle" ? fadeFilter(fadeAt(3)) : undefined} />
       </div>
 
       <section key={step} className="flex flex-1 flex-col pt-3 animate-rise">
@@ -337,7 +385,7 @@ export default function RoomPage() {
                     src={patternSrc}
                     alt={`Your print after ${y} year${y > 1 ? "s" : ""}`}
                     className="aspect-square w-full rounded-xl border border-line object-cover transition-[filter] duration-500"
-                    style={{ filter: fadeFilter(projectedFade(room, y)) }}
+                    style={{ filter: fadeFilter(fadeAt(y)) }}
                   />
                   <figcaption className="mt-1 text-center text-xs font-medium">Year {y}</figcaption>
                 </figure>
@@ -363,14 +411,33 @@ export default function RoomPage() {
 
         <div className="mt-auto pt-6">
           {step === "lifecycle" ? (
-            <button
-              type="button"
-              onClick={buy}
-              disabled={buying}
-              className="flex h-14 w-full items-center justify-center rounded-full bg-accent text-base font-semibold text-white active:scale-[0.98] disabled:opacity-60"
-            >
-              {buying ? "Opening checkout…" : `Love it as is · ${formatPrice(product.price)}`}
-            </button>
+            <div className="flex flex-col gap-2">
+              {product.sunSmart ? (
+                <p className="rounded-2xl border-2 border-ink bg-white p-3 text-sm leading-snug" aria-live="polite">
+                  <span className="font-semibold">Sun-smart colorway ✓</span> Same {product.categoryName.toLowerCase()}, softer tones that show
+                  fading far less in your light. Arcade recolored it just now.
+                </p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={makeItLast}
+                  disabled={lasting.state === "recolor" || lasting.state === "build"}
+                  className="flex min-h-14 w-full flex-col items-center justify-center rounded-full border-2 border-ink px-4 py-2 text-base font-semibold active:scale-[0.98] disabled:opacity-60"
+                >
+                  {lasting.state === "recolor" ? "Softening your colors…" : lasting.state === "build" ? "Making it with your options…" : "Make it last"}
+                  {lasting.state === "idle" && <span className="text-xs font-normal text-muted">A sun-smart colorway that shows fading less</span>}
+                </button>
+              )}
+              {lasting.state === "error" && <p className="text-sm text-accent">{lasting.message}. Your original is still ready.</p>}
+              <button
+                type="button"
+                onClick={buy}
+                disabled={buying}
+                className="flex h-14 w-full items-center justify-center rounded-full bg-accent text-base font-semibold text-white active:scale-[0.98] disabled:opacity-60"
+              >
+                {buying ? "Opening checkout…" : `${product.sunSmart ? "Buy the sun-smart one" : "Love it as is"} · ${formatPrice(product.price)}`}
+              </button>
+            </div>
           ) : (
             <button
               type="button"

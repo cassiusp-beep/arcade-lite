@@ -109,3 +109,33 @@ export function projectedFade(room: RoomLight, years: number): number {
 export function fadeFilter(fade: number): string {
   return `saturate(${(1 - fade).toFixed(2)}) brightness(${(1 + fade * 0.18).toFixed(2)}) sepia(${(fade * 0.25).toFixed(2)}) contrast(${(1 - fade * 0.3).toFixed(2)})`;
 }
+
+/**
+ * Sun-smart colorway: softer, less saturated and closer to mid-light. A different colorway
+ * doesn't make fabric itself sun-proof, but fading shows far less on muted tones.
+ */
+export function sunSmartColor(hex: string): string {
+  const n = parseInt(hex.slice(1), 16);
+  let r = ((n >> 16) & 255) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h = 0, s = 0;
+  let l = (max + min) / 2;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    h = max === r ? (g - b) / d + (g < b ? 6 : 0) : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    h /= 6;
+  }
+  s *= 0.5;
+  l = l + (0.62 - l) * 0.35;
+  const hue = (t: number) => {
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s, p = 2 * l - q;
+    t = (t + 1) % 1;
+    return t < 1 / 6 ? p + (q - p) * 6 * t : t < 1 / 2 ? q : t < 2 / 3 ? p + (q - p) * (2 / 3 - t) * 6 : p;
+  };
+  [r, g, b] = s === 0 ? [l, l, l] : [hue(h + 1 / 3), hue(h), hue(h - 1 / 3)];
+  return "#" + [r, g, b].map((v) => Math.round(v * 255).toString(16).padStart(2, "0")).join("");
+}
+
+/** Muted colorways show the same sun as roughly 40% less visible fading. */
+export const SUN_SMART_FADE = 0.6;

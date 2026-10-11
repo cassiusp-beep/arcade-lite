@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { estimateFromPixels, facingFromHeading, lightAdvice, projectedFade, sunExposure, viewerLight } from "../light";
+import { estimateFromPixels, facingFromHeading, lightAdvice, projectedFade, sunExposure, sunSmartColor, viewerLight } from "../light";
 
 describe("room light", () => {
   it("rates a big sunny west window as high sun exposure", () => {
@@ -45,5 +45,16 @@ describe("lifecycle", () => {
     expect(projectedFade(sunny, 5)).toBeGreaterThan(projectedFade(shady, 5));
     expect(projectedFade(sunny, 5)).toBeGreaterThan(projectedFade(sunny, 1));
     expect(projectedFade(sunny, 50)).toBeLessThanOrEqual(0.85);
+  });
+});
+
+
+
+describe("sun-smart colorway", () => {
+  it("softens saturated colors and keeps valid hex", () => {
+    const out = sunSmartColor("#ff0055");
+    expect(out).toMatch(/^#[0-9a-f]{6}$/);
+    expect(out).not.toBe("#ff0055");
+    expect(sunSmartColor("#808080")).toMatch(/^#[0-9a-f]{6}$/);
   });
 });

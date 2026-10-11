@@ -29,7 +29,10 @@ export type GeneratedProduct = {
   productId: string;
   patternId: string;
   title: string;
+  categoryId?: string;
   categoryName: string;
+  /** Recolored by "Make it last": muted tones show fading less. */
+  sunSmart?: boolean;
   /** Null for jewelry, which has no room model. */
   mesh: MeshKind | null;
   world?: World;
