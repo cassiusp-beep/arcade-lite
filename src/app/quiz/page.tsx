@@ -32,6 +32,8 @@ export default function QuizPage() {
     setQuiz(drawQuiz(isDemo ? DEMO_SEED : Date.now()) ?? fallbackQuiz());
     setDemo(isDemo);
     if (isDemo) setMusic("Frank Ocean, Clairo");
+    // /quiz?demo=1&jump=music opens straight on the soundtrack screen (for filming).
+    if (isDemo && new URLSearchParams(location.search).get("jump") === "music") setPhase("music");
   }, []);
 
   if (!quiz) return <main className="flex-1" />;
