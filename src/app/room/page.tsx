@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { IsoRoom } from "@/components/iso-room";
+import { yearlySunHours } from "@/lib/sun";
 import { ProductViewer, textureUrl } from "@/components/product-viewer";
 import { formatPrice, type GeneratedProduct } from "@/lib/catalog";
 import {
@@ -51,17 +52,29 @@ const WALLS = [
   { hex: "#e8c98a", name: "Ochre" },
 ];
 const SUN_LEVEL = { low: 0.25, medium: 0.55, high: 0.9 } as const;
-const STEPS = ["window", "light", "walls", "lifecycle"] as const;
+const STEPS = ["place", "window", "light", "time", "walls", "lifecycle"] as const;
 type Step = (typeof STEPS)[number];
 
 const DEMO: { room: RoomLight; wall: string } = { room: { windowSize: "medium", facing: "west", brightness: "sunny" }, wall: "#dfe7d6" };
+// When location is skipped (or in demo mode) we assume a sunny city and say so.
+const ASSUMED_PLACE = { lat: 34.05, lng: -118.24, label: "Los Angeles (assumed)" };
+const TIME_IN_SPACE = [
+  { id: "lt1", label: "Under an hour", hours: 0.5 },
+  { id: "1-3", label: "1 to 3 hours", hours: 2 },
+  { id: "3-6", label: "3 to 6 hours", hours: 4.5 },
+  { id: "most", label: "Most of the day", hours: 8 },
+] as const;
+type Place = { lat: number; lng: number; label: string };
 
 type Compass = { state: "idle" } | { state: "reading"; heading: number | null } | { state: "unavailable"; reason: string };
 
 export default function RoomPage() {
   const raw = useSyncExternalStore(subscribe, read, () => null);
   const product = useMemo(() => (raw ? (JSON.parse(raw) as GeneratedProduct) : null), [raw]);
-  const [step, setStep] = useState<Step>("window");
+  const [step, setStep] = useState<Step>("place");
+  const [place, setPlace] = useState<Place | null>(null);
+  const [locating, setLocating] = useState<string | null>(null);
+  const [timeIn, setTimeIn] = useState<(typeof TIME_IN_SPACE)[number]["id"]>("1-3");
   const [facing, setFacing] = useState<Facing | null>(null);
   const [brightness, setBrightness] = useState<Brightness>("bright");
   const [warmth, setWarmth] = useState<number | undefined>(undefined);
@@ -71,11 +84,15 @@ export default function RoomPage() {
   const [buying, setBuying] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const stopCompass = useRef<(() => void) | null>(null);
+  // Sun math runs here, on the phone: lat/long are never sent anywhere.
+  const sunHours = useMemo(() => (place && facing ? yearlySunHours(place.lat, place.lng, facing) : undefined), [place, facing]);
 
   // ?demo=1 presets every answer so the presenter just taps through.
   useEffect(() => {
     if (new URLSearchParams(location.search).get("demo") !== "1") return;
     // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time read of the URL on mount
+    setPlace(ASSUMED_PLACE);
+    setTimeIn("3-6");
     setFacing(DEMO.room.facing);
     setBrightness(DEMO.room.brightness);
     setWall(DEMO.wall);
@@ -94,11 +111,26 @@ export default function RoomPage() {
     );
   }
 
-  const room: RoomLight = { windowSize: "medium", facing: facing ?? "south", brightness, warmth };
+  const room: RoomLight = { windowSize: "medium", facing: facing ?? "south", brightness, warmth, sunHours };
+  const timeLabel = TIME_IN_SPACE.find((t) => t.id === timeIn)!.label.toLowerCase();
   const exposure = sunExposure(room);
   const sun = facing === "north" ? 0.15 : SUN_LEVEL[exposure];
   const stepIndex = STEPS.indexOf(step);
   const patternSrc = textureUrl(product.patternImageUrl);
+
+  function locate() {
+    if (!navigator.geolocation) return setLocating("Location isn't available here. We'll assume a sunny city.");
+    setLocating("Finding you…");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        // Round to ~1 km: plenty for sun angles, and less precise than they shared.
+        setPlace({ lat: Math.round(pos.coords.latitude * 100) / 100, lng: Math.round(pos.coords.longitude * 100) / 100, label: "your location" });
+        setLocating(null);
+      },
+      () => setLocating("Location was declined. We'll assume a sunny city; you can still tell us everything else."),
+      { enableHighAccuracy: false, timeout: 8000, maximumAge: 600000 },
+    );
+  }
 
   async function startCompass() {
     type IOSOrientation = typeof DeviceOrientationEvent & { requestPermission?: () => Promise<"granted" | "denied"> };
@@ -158,6 +190,10 @@ export default function RoomPage() {
   }
 
   const canNext = step !== "window" || facing !== null;
+  function next() {
+    if (step === "place" && !place) setPlace(ASSUMED_PLACE);
+    setStep(STEPS[stepIndex + 1]);
+  }
   const item = product.categoryName.toLowerCase();
 
   return (
@@ -184,6 +220,33 @@ export default function RoomPage() {
       </div>
 
       <section key={step} className="flex flex-1 flex-col pt-3 animate-rise">
+        {step === "place" && (
+          <>
+            <p className="text-xs font-medium tracking-[0.2em] uppercase text-accent">Location</p>
+            <h1 className="mt-2 font-display text-[1.9rem] leading-[1.05] tracking-tight">Where is the space you&rsquo;re designing for?</h1>
+            <p className="mt-2 text-muted">We use your location once to see where the sun hits your space. It never leaves your phone.</p>
+            <button type="button" onClick={locate} className="mt-4 h-14 rounded-full bg-ink text-base font-semibold text-paper active:scale-[0.98]">
+              {place?.label === "your location" ? "Got it ✓" : "Use my location once"}
+            </button>
+            {locating && <p className="mt-2 text-sm text-muted">{locating}</p>}
+            {place?.label === "your location" && <p className="mt-2 text-sm">Sun angles set for where you are.</p>}
+          </>
+        )}
+
+        {step === "time" && (
+          <>
+            <p className="text-xs font-medium tracking-[0.2em] uppercase text-accent">Your days</p>
+            <h1 className="mt-2 font-display text-[1.9rem] leading-[1.05] tracking-tight">How much time do you spend in this space?</h1>
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              {TIME_IN_SPACE.map((t) => (
+                <Chip key={t.id} active={timeIn === t.id} onClick={() => setTimeIn(t.id)}>
+                  {t.label}
+                </Chip>
+              ))}
+            </div>
+          </>
+        )}
+
         {step === "window" && (
           <>
             <p className="text-xs font-medium tracking-[0.2em] uppercase text-accent">Natural light</p>
@@ -284,7 +347,13 @@ export default function RoomPage() {
               <span className="font-semibold">In your light: </span>
               {lightAdvice(room, product.categoryName)}
             </p>
-            <p className="mt-1 text-xs text-muted">A projection from your window and light, not a lab test.</p>
+            {sunHours !== undefined && (
+              <p className="mt-2 text-sm leading-snug">
+                ☀️ About <span className="font-semibold">{sunHours} hours</span> of direct sun a day through a {room.facing}-facing window at {place!.label}, averaged
+                over a year. You&rsquo;re in here {timeLabel}, so you&rsquo;ll really live with it.
+              </p>
+            )}
+            <p className="mt-1 text-xs text-muted">A projection from sun angles and your answers, not a lab test. Trees and buildings can change it.</p>
 
             <div className="mt-4">
               <ProductViewer mesh={product.mesh!} patternUrl={product.patternImageUrl} selections={product.selections} light={viewerLight(room)} alt={product.title} />
@@ -306,10 +375,10 @@ export default function RoomPage() {
             <button
               type="button"
               disabled={!canNext}
-              onClick={() => setStep(STEPS[stepIndex + 1])}
+              onClick={next}
               className="flex h-14 w-full items-center justify-center rounded-full bg-ink text-base font-semibold text-paper active:scale-[0.98] disabled:bg-line disabled:text-muted"
             >
-              {canNext ? "Next" : "Pick a direction"}
+              {!canNext ? "Pick a direction" : step === "place" && !place ? "Skip, assume a sunny city" : "Next"}
             </button>
           )}
         </div>

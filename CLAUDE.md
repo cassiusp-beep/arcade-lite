@@ -15,7 +15,7 @@ Shoppers miss having a stylist or store associate help them decide, and many don
 - **Arcade:** read `docs/context/arcade.md` first. Use the `arcade-api` skill for endpoint details and `arcade-api-test-drive` for key and safety rules.
 - **Process docs:** `docs/process/` holds the design principles, features, references, visual spec, anti-slop rules, voice and tone, research plan, and demo script. Sections still in template form mean "not yet defined": ask the human rather than inventing answers.
 - **Build order:** see `docs/context/arcade.md` § Build order. Do not start a step until the previous one works end to end.
-- **Deadlines:** submission ~3:00pm PT (hard). Building continues until ~5:30pm PT.
+- **Deadlines:** submission **3:30pm PT** (extended from 3:00, hard). Building continues until ~5:30pm PT.
 
 ## The Journey (source of truth)
 
@@ -29,7 +29,7 @@ Cassius likes the current build: **extend it, don't rebuild or restyle it.** Wor
 | 4 | The ask: "what, and where in your space" + Surprise me (voice is a stretch) | Category grid + idea text exist | `/design`, `buildPrompt` in `src/lib/catalog.ts` |
 | 5 | Design: generate, crop, make seamless, refine, confirm | Generate/poll/product work; refine not started | `/api/arcade/*`, `/product` |
 | 6 | See it: 3D + AR Quick Look | **Done.** AR confirmed on iPhone; models built from Arcade selections | `src/components/product-viewer.tsx`, `src/lib/models.ts` |
-| 7 | One more thing: compass + location, SunCalc sun hours, time in space, lifecycle, recolor for sun resistance | **Isometric room flow live:** compass (N/E/S/W fallback), brightness/photo, wall color, year 1/3/5 fade. Missing: location/SunCalc, time in space, recolor | `/room`, `src/components/iso-room.tsx`, `src/lib/light.ts` |
+| 7 | One more thing: compass + location, SunCalc sun hours, time in space, lifecycle, recolor for sun resistance | **Mostly done (2:32pm).** 6-step isometric room: location once (rounded, client-only, skip assumes LA) → compass/N-E-S-W → brightness/photo → time in space → wall color → lifecycle. `yearlySunHours` (SunCalc 1.9.0) drives exposure, the year 1/3/5 fade and the sun note. **Missing: "Make it last" (Arcade recolor), lamp, drag distance, time scrubber.** | `/room`, `src/lib/sun.ts`, `src/lib/light.ts`, `src/components/iso-room.tsx` |
 | 8 | Checkout | **Done** | `/api/arcade/checkout` |
 | + | Jewelry + live face try-on | **Done (2:16pm).** "To wear" section on `/design` (studs, pendant, gemstone ring, dangles from `categories/list`, `world: jewelry`, no references); `/tryon` uses MediaPipe Face Landmarker 1.0.1 (wasm from jsdelivr, model from Google storage) to pin the real Arcade photo, tight-cropped, to ears or below the chin; snap + share. Rings not supported (need hand tracking). Demo: `/demo/jewelry.json` (olive vermeil studs, $324). **Placement not yet checked on a real face.** | `/tryon`, `tryOnKind` in `src/lib/catalog.ts` |
 

@@ -1,9 +1,18 @@
+import { exposureFromHours } from "./sun";
+
 /** Room light model: answers (or a photo estimate) → viewer lighting + one line of advice. */
 export type WindowSize = "small" | "medium" | "wall";
 export type Facing = "north" | "east" | "south" | "west";
 export type Brightness = "dim" | "bright" | "sunny";
 
-export type RoomLight = { windowSize: WindowSize; facing: Facing; brightness: Brightness; warmth?: number };
+export type RoomLight = {
+  windowSize: WindowSize;
+  facing: Facing;
+  brightness: Brightness;
+  warmth?: number;
+  /** Yearly-average direct sun hours from SunCalc (when we know their location). */
+  sunHours?: number;
+};
 
 export type ViewerLight = {
   exposure: number;
@@ -39,6 +48,13 @@ export function viewerLight(room: RoomLight): ViewerLight {
 
 /** Direct sun on fabric is what fades prints: south and west windows, big glass, sunny rooms. */
 export function sunExposure(room: RoomLight): "low" | "medium" | "high" {
+  if (room.sunHours !== undefined) {
+    // Sun math knows geometry; the brightness answer knows the trees and buildings outside.
+    const levels = ["low", "medium", "high"] as const;
+    const base = levels.indexOf(exposureFromHours(room.sunHours));
+    const shift = room.brightness === "dim" ? -1 : room.brightness === "sunny" ? 1 : 0;
+    return levels[Math.max(0, Math.min(2, base + shift))];
+  }
   let score = { north: 0, east: 1, south: 2, west: 2 }[room.facing];
   score += { small: 0, medium: 1, wall: 2 }[room.windowSize];
   score += { dim: 0, bright: 1, sunny: 2 }[room.brightness];
