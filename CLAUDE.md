@@ -24,7 +24,7 @@ Cassius likes the current build: **extend it, don't rebuild or restyle it.** Wor
 | # | Step | Status | Where |
 |---|---|---|---|
 | 1 | Vibe check: 10 generated Y2K/pop-culture questions, live aura card, skippable | **Done (1:52pm).** Gemini-written bank of 30 everyday-life questions (`scripts/gen-quiz-bank.mjs`, re-run to refresh); each quiz = Saturday + windowsill anchors + 8 random distinct topics; live aura card; skip question / skip quiz; `?demo=1` = fixed seed. Testers: keep it niche and real-life, no abstract or celebrity questions | `/quiz`, `src/lib/quiz/bank.ts`, `bank.json`, `src/components/aura-card.tsx` |
-| 2 | Soundtrack: 1–2 artists or a playlist; Spotify/Apple Music buttons are visual only | Not started | none yet |
+| 2 | Soundtrack: 1–2 artists or a playlist; Spotify/Apple Music buttons are visual only | **Done (2:05pm).** Screen after Q10 (or Skip quiz) with the aura still visible; `/api/vibe` asks Gemini for colors, keywords, a one-line read and style weights; curated artist map is the fallback and the `?demo=1` path; music weights tip the profile and `profile.soundtrack` is saved | `/quiz`, `/api/vibe`, `src/lib/soundtrack.ts`, `src/lib/gemini.ts` |
 | 3 | Style profile: quiz + music → name, palette, keywords, design direction; shareable | Card, share link, OG image exist | `/profile`, `src/lib/profile.ts`, `/api/card` |
 | 4 | The ask: "what, and where in your space" + Surprise me (voice is a stretch) | Category grid + idea text exist | `/design`, `buildPrompt` in `src/lib/catalog.ts` |
 | 5 | Design: generate, crop, make seamless, refine, confirm | Generate/poll/product work; refine not started | `/api/arcade/*`, `/product` |
@@ -33,6 +33,12 @@ Cassius likes the current build: **extend it, don't rebuild or restyle it.** Wor
 | 8 | Checkout | **Done** | `/api/arcade/checkout` |
 
 Extra (not in the journey): `/inspire` (barcode + photo → Arcade reference) could feed step 4 or the step 1 mood board.
+
+**Tester ideas (backlog, propose when the journey allows):**
+- **Gallery:** "designed spaces that exemplify others' styles and how their style influenced their design." Seed from the 6 archetypes + real Arcade products; makes people browse further.
+- **Pinterest board upload** (demo only): "let me upload my Pinterest boards." Cheapest path: multi-photo upload on `/inspire` → Arcade references → mood board / profile.
+
+**Gemini note:** free-tier models get overloaded (503). `src/lib/gemini.ts` tries `gemini-3.5-flash`, then `gemini-flash-lite-latest`, then `gemini-flash-latest` within one time budget; every caller has a non-LLM fallback.
 
 User feedback to address in step 4: patterns felt "too on the nose" (picked beach → got a beach print). Make the pattern direction more radical/unexpected.
 

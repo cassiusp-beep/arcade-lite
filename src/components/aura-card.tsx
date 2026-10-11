@@ -3,10 +3,10 @@
 import { animate } from "animejs";
 import { useEffect, useRef } from "react";
 
-type Props = { colors: string[]; keywords: string[]; total: number };
+type Props = { colors: string[]; keywords: string[]; answered: number; total: number; music?: boolean };
 
 /** Live "aura" that builds as the shopper answers: layered color glows plus keyword stickers. */
-export function AuraCard({ colors, keywords, total }: Props) {
+export function AuraCard({ colors, keywords, answered, total, music }: Props) {
   const orbRef = useRef<HTMLDivElement>(null);
   const stickersRef = useRef<HTMLUListElement>(null);
 
@@ -29,7 +29,8 @@ export function AuraCard({ colors, keywords, total }: Props) {
       <div className="absolute inset-x-0 top-0 flex items-center justify-between px-3 pt-2 text-[0.7rem] font-semibold tracking-[0.15em] uppercase">
         <span className="rounded-full bg-paper/85 px-2 py-0.5">Your aura</span>
         <span className="rounded-full bg-paper/85 px-2 py-0.5">
-          {colors.length}/{total}
+          {answered}/{total}
+          {music && " + 🎧"}
         </span>
       </div>
       <ul ref={stickersRef} className="absolute inset-x-0 bottom-0 flex flex-wrap gap-1.5 px-3 pb-2">

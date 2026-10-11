@@ -1,5 +1,6 @@
 import { ARCHETYPES, ARCHETYPE_IDS, type ArchetypeId, type Swatch } from "./quiz/archetypes";
 import { ALL_QUESTIONS } from "./quiz/bank";
+import type { SonicVibe } from "./soundtrack";
 
 export type QuizAnswer = { questionId: string; optionId: string };
 
@@ -14,14 +15,18 @@ export type StyleProfile = {
   answers: QuizAnswer[];
   /** Seed text for Arcade's patterns/create prompt (step 2). */
   promptSeed: string;
+  /** What they're listening to and how we read it (step 2, optional). */
+  soundtrack?: { text: string; line: string; keywords: string[] };
   createdAt: string;
 };
+
+type Weights = Partial<Record<ArchetypeId, number>>;
 
 const STORAGE_KEY = "arcade-lite:profile";
 
 /** Sum option weights. Ties break by ARCHETYPE_IDS order so results are deterministic. */
-export function scoreAnswers(answers: QuizAnswer[]): Record<ArchetypeId, number> {
-  const scores = Object.fromEntries(ARCHETYPE_IDS.map((id) => [id, 0])) as Record<ArchetypeId, number>;
+export function scoreAnswers(answers: QuizAnswer[], extra: Weights = {}): Record<ArchetypeId, number> {
+  const scores = Object.fromEntries(ARCHETYPE_IDS.map((id) => [id, extra[id] ?? 0])) as Record<ArchetypeId, number>;
   for (const { questionId, optionId } of answers) {
     const option = ALL_QUESTIONS[questionId]?.options.find((o) => o.id === optionId);
     if (!option) continue;
@@ -30,8 +35,8 @@ export function scoreAnswers(answers: QuizAnswer[]): Record<ArchetypeId, number>
   return scores;
 }
 
-export function rankArchetypes(answers: QuizAnswer[]): [ArchetypeId, ArchetypeId] {
-  const scores = scoreAnswers(answers);
+export function rankArchetypes(answers: QuizAnswer[], extra: Weights = {}): [ArchetypeId, ArchetypeId] {
+  const scores = scoreAnswers(answers, extra);
   const ranked = [...ARCHETYPE_IDS].sort((a, b) => scores[b] - scores[a]);
   return [ranked[0], ranked[1]];
 }
@@ -63,9 +68,15 @@ export function buildProfile(
   };
 }
 
-export function profileFromAnswers(answers: QuizAnswer[]): StyleProfile {
-  const [primary, secondary] = rankArchetypes(answers);
-  return buildProfile(primary, secondary, answers, new Date().toISOString());
+export function profileFromAnswers(answers: QuizAnswer[], music?: { text: string; vibe: SonicVibe }): StyleProfile {
+  const [primary, secondary] = rankArchetypes(answers, music?.vibe.weights);
+  const profile = buildProfile(primary, secondary, answers, new Date().toISOString());
+  if (!music) return profile;
+  return {
+    ...profile,
+    soundtrack: { text: music.text, line: music.vibe.line, keywords: music.vibe.keywords },
+    promptSeed: `${profile.promptSeed}, with the mood of ${music.vibe.keywords.join(", ").toLowerCase()} music`,
+  };
 }
 
 /* Share links carry only the archetype ids; everything else is rebuilt from ARCHETYPES. */
