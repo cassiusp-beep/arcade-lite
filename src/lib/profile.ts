@@ -40,7 +40,8 @@ export function buildProfile(
   archetypeId: ArchetypeId,
   secondaryId: ArchetypeId,
   answers: QuizAnswer[] = [],
-  createdAt = new Date().toISOString(),
+  /** Empty for profiles rebuilt from a share link (keeps server rendering deterministic). */
+  createdAt = "",
 ): StyleProfile {
   const primary = ARCHETYPES[archetypeId];
   const secondary = ARCHETYPES[secondaryId];
@@ -64,7 +65,7 @@ export function buildProfile(
 
 export function profileFromAnswers(answers: QuizAnswer[]): StyleProfile {
   const [primary, secondary] = rankArchetypes(answers);
-  return buildProfile(primary, secondary, answers);
+  return buildProfile(primary, secondary, answers, new Date().toISOString());
 }
 
 /* Share links carry only the archetype ids; everything else is rebuilt from ARCHETYPES. */

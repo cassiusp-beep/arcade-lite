@@ -1,15 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { BarcodeScanner, barcodeFromPhoto } from "@/components/barcode-scanner";
 import { loadInspirations, saveInspirations, type Inspiration } from "@/lib/inspiration";
-
-type BarcodeDetectorLike = { detect: (src: ImageBitmapSource) => Promise<{ rawValue: string }[]> };
-declare global {
-  interface Window {
-    BarcodeDetector?: new (opts?: { formats: string[] }) => BarcodeDetectorLike;
-  }
-}
 
 /** Downscale to a 1024px JPEG so uploads stay small and fast on cell data. */
 async function shrink(file: File): Promise<{ blob: Blob; dataUrl: string }> {
@@ -29,22 +23,19 @@ async function shrink(file: File): Promise<{ blob: Blob; dataUrl: string }> {
   return { blob, dataUrl: thumb.toDataURL("image/jpeg", 0.7) };
 }
 
-async function detectBarcode(file: File): Promise<string | null> {
-  if (!window.BarcodeDetector) return null;
-  try {
-    const detector = new window.BarcodeDetector({ formats: ["ean_13", "ean_8", "upc_a", "upc_e"] });
-    const [hit] = await detector.detect(await createImageBitmap(file));
-    return hit?.rawValue ?? null;
-  } catch {
-    return null;
-  }
-}
-
 export default function InspirePage() {
   const [items, setItems] = useState<Inspiration[]>([]);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [code, setCode] = useState("");
+  const [scanning, setScanning] = useState(false);
+  const [product, setProduct] = useState<string | null>(null);
+  const onCode = useCallback(async (c: string) => {
+    setScanning(false);
+    setCode(c);
+    const hit = await fetch(`/api/barcode?code=${c}`).then((r) => r.json()).catch(() => null);
+    setProduct(hit?.title ?? null);
+  }, []);
   const photoRef = useRef<HTMLInputElement>(null);
 
   // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time hydration from localStorage
@@ -59,7 +50,7 @@ export default function InspirePage() {
     setError(null);
     setBusy("Reading the tag…");
     try {
-      const scanned = (await detectBarcode(file)) ?? (code.trim() || null);
+      const scanned = code.replace(/\D/g, "") || (await barcodeFromPhoto(file));
       const lookup = scanned ? await fetch(`/api/barcode?code=${scanned}`).then((r) => r.json()).catch(() => null) : null;
       setBusy("Saving to your inspiration…");
       const { blob, dataUrl } = await shrink(file);
@@ -73,8 +64,9 @@ export default function InspirePage() {
         ...items,
       ].slice(0, 12));
       setCode("");
+      setProduct(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Couldn't save that photo");
+      setError(err instanceof TypeError ? "Lost connection while saving. Try again?" : err instanceof Error ? err.message : "Couldn't save that photo");
     } finally {
       setBusy(null);
     }
@@ -91,17 +83,29 @@ export default function InspirePage() {
         Snap it, tag and all. Your next design borrows its colors and motifs.
       </p>
 
-      <label htmlFor="code" className="mt-6 block text-sm font-medium">
-        Barcode number <span className="font-normal text-muted">(optional, we try to read it from the photo)</span>
-      </label>
-      <input
-        id="code"
-        inputMode="numeric"
-        value={code}
-        onChange={(e) => setCode(e.target.value)}
-        placeholder="e.g. 0 12345 67890 5"
-        className="mt-2 h-12 w-full rounded-xl border border-line bg-white px-4 text-base outline-none focus:border-ink"
-      />
+      <div className="mt-6 flex items-end gap-2">
+        <div className="flex-1">
+          <label htmlFor="code" className="block text-sm font-medium">
+            Barcode <span className="font-normal text-muted">(optional)</span>
+          </label>
+          <input
+            id="code"
+            inputMode="numeric"
+            value={code}
+            onChange={(e) => {
+              setCode(e.target.value);
+              setProduct(null);
+            }}
+            placeholder="Scan or type it"
+            className="mt-2 h-12 w-full rounded-xl border border-line bg-white px-4 text-base outline-none focus:border-ink"
+          />
+        </div>
+        <button type="button" onClick={() => setScanning(true)} className="h-12 rounded-xl border-2 border-ink px-4 text-sm font-semibold">
+          Scan
+        </button>
+      </div>
+      {product && <p className="mt-2 text-sm"><span className="text-muted">Found:</span> {product}</p>}
+      {scanning && <BarcodeScanner onCode={onCode} onClose={() => setScanning(false)} />}
 
       <input ref={photoRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => e.target.files?.[0] && addPhoto(e.target.files[0])} />
       <button

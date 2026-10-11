@@ -31,6 +31,8 @@ export default function DesignPage() {
   const cancelled = useRef(false);
 
   useEffect(() => {
+    // Reset on every mount: Next keeps hidden pages alive and re-runs effects when you come back.
+    cancelled.current = false;
     fetch("/api/arcade/categories")
       .then((r) => (r.ok ? r.json() : Promise.reject()))
       .then((d) => setCatalog(d.items))
@@ -87,13 +89,20 @@ export default function DesignPage() {
 
       while (!cancelled.current) {
         await new Promise((r) => setTimeout(r, POLL_MS));
-        const job = await fetch(`/api/arcade/jobs/${start.jobId}`).then((r) => r.json());
+        // A dropped request (backgrounded tab, flaky cell signal) just means "ask again".
+        const job = await fetch(`/api/arcade/jobs/${start.jobId}`)
+          .then((r) => r.json())
+          .catch(() => ({ status: "running" }));
         if (job.status === "succeeded") return finish(job.product, selected, prompt);
         if (job.status === "failed" || job.error) throw new Error(job.error ?? "Generation failed");
         if (Date.now() - startedAt > GIVE_UP_MS) throw new Error("Arcade is taking longer than usual.");
       }
     } catch (err) {
-      setPhase({ kind: "error", message: err instanceof Error ? err.message : "Something broke while designing." });
+      const offline = err instanceof TypeError; // Safari reports network drops as "Load failed"
+      setPhase({
+        kind: "error",
+        message: offline ? "We lost the connection to Arcade for a second." : err instanceof Error ? err.message : "Something broke while designing.",
+      });
     }
   }
 

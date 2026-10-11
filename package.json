@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@google/model-viewer": "^4.4.0",
+    "@zxing/browser": "^0.1.5",
     "next": "16.4.0",
     "react": "19.3.0",
     "react-dom": "19.3.0"
