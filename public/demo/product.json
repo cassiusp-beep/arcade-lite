@@ -12,5 +12,11 @@
   "careInstructions": "**Fine Cotton:** Our Fine Cotton fabric is a soft, refined canvas weave that beautifully shows off your printed artwork. Made of 100% cotton, this supple fabric goes perfectly in any room.\r\n\r\n* Cold wash, gentle cycle with like colors\r\n* Tumble dry low; remove promptly\r\n* Only non-chlorine bleach if needed\r\n* Cool iron if desired\r\n* Do not dry clean\r\n\r\n**Soft Linen:** Finished for an irresistibly soft handfeel, this fabric offers the relaxed look of classic linen with an added touch of lived-in ease. Over time, it will only grow softer, making it a timeless favorite for your home.\r\n\r\n* Cold wash, gentle cycle with like colors\r\n* Tumble dry low; remove promptly\r\n* Only non-chlorine bleach if needed\r\n* Cool iron if desired\r\n* Do not dry clean\r\n\r\n**Velvet:** Luxuriously soft with a subtle sheen, this plush velvet pillow adds depth and richness to any space. Made from 100% polyester, it offers lasting durability with an elegant, smooth finish.\r\n\r\n* Spot clean with a soft cloth, cold water, and mild detergent\r\n* Blot gently, never rub, to preserve the pile\r\n* Avoid bleach or harsh cleaners\r\n* Air dry only; do not tumble dry\r\n* Steam lightly to remove creases and restore texture\r\n* Do not iron\r\n\r\n**100% Recycled Polyester:** To care for your outdoor pillows, regularly brush off dirt and debris, and spot clean with a soft cloth, cold water, and mild soap as needed. Avoid bleach or harsh cleaners, and allow to air dry completely before use. For best results, store pillows indoors during extended exposure to moisture or harsh weather.",
   "categoryName": "Decorative Pillows",
   "mesh": "pillow",
-  "prompt": "A collected, sun-faded, storied pattern for decorative pillows in the \"Sunlit Archivist\" style, vintage-inspired, sun-faded warm tones, hand-drawn motifs, flea-market charm, with a hint of dark academia, palette of linen, terracotta, olive, walnut, cream"
+  "prompt": "A collected, sun-faded, storied pattern for decorative pillows in the \"Sunlit Archivist\" style, vintage-inspired, sun-faded warm tones, hand-drawn motifs, flea-market charm, with a hint of dark academia, palette of linen, terracotta, olive, walnut, cream",
+  "selections": {
+    "fabric": "cotton_velvet",
+    "size": "22x14",
+    "embellishment": "piping_and_tassels",
+    "insert": "microfiber"
+  }
 }

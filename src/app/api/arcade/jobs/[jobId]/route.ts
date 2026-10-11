@@ -23,6 +23,7 @@ export async function GET(_request: Request, { params }: RouteContext<"/api/arca
         patternImageUrl: pattern?.imageUrl ?? product.imageUrl,
         price: product.unitPrice,
         selectionLabel: product.selectionLabel,
+        selections: product.selections,
         careInstructions: product.careInstructions,
       },
     });

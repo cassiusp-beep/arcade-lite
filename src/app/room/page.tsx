@@ -93,7 +93,7 @@ export default function RoomPage() {
       <h1 className="mt-2 font-display text-[2rem] leading-[1.05] tracking-tight">How will it look at home?</h1>
 
       <div className="mt-5">
-        <ProductViewer mesh={product.mesh} patternUrl={product.patternImageUrl} light={light} alt={product.title} />
+        <ProductViewer mesh={product.mesh} patternUrl={product.patternImageUrl} selections={product.selections} light={light} alt={product.title} />
       </div>
 
       <p className="mt-4 rounded-2xl bg-white p-4 text-[0.95rem] leading-snug" aria-live="polite">

@@ -63,6 +63,7 @@ export type ArcadeProduct = {
   title: string;
   categoryId: string;
   selectionLabel: string;
+  selections: Record<string, string>;
   imageUrl: string;
   images: { url: string }[];
   careInstructions: string;

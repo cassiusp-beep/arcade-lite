@@ -26,6 +26,8 @@ export type GeneratedProduct = {
   patternImageUrl: string;
   price: { amount: string; currency: string } | null;
   selectionLabel: string;
+  /** Arcade option values, e.g. { size: "22x14", embellishment: "piping_and_tassels" }. */
+  selections?: Record<string, string>;
   careInstructions: string;
   prompt: string;
   fallback?: boolean;

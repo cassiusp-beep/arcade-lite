@@ -24,10 +24,12 @@ export function textureUrl(url: string) {
   return url.startsWith("/") ? url : `/api/image?u=${encodeURIComponent(url)}`;
 }
 
-type Props = { mesh: MeshKind; patternUrl: string; light: ViewerLight; alt: string };
+type Props = { mesh: MeshKind; patternUrl: string; selections?: Record<string, string>; light: ViewerLight; alt: string };
 
-export function ProductViewer({ mesh, patternUrl, light, alt }: Props) {
+export function ProductViewer({ mesh, patternUrl, selections, light, alt }: Props) {
   const ref = useRef<ModelViewerElement>(null);
+  // A model built from the product's own size and trim; the static model is the fallback.
+  const [model, setModel] = useState<{ src: string; built: boolean } | null>(null);
   const [ready, setReady] = useState(false);
   const [canAR, setCanAR] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -36,10 +38,33 @@ export function ProductViewer({ mesh, patternUrl, light, alt }: Props) {
     import("@google/model-viewer").catch(() => setFailed(true));
   }, []);
 
+  const selectionsKey = JSON.stringify(selections ?? {});
+  useEffect(() => {
+    let url: string | null = null;
+    let live = true;
+    import("@/lib/models")
+      .then(({ buildProductGlb }) => buildProductGlb({ mesh, selections: JSON.parse(selectionsKey), patternUrl: textureUrl(patternUrl) }))
+      .then((src) => {
+        url = src;
+        if (live) setModel({ src, built: true });
+      })
+      .catch(() => live && setModel({ src: `/models/${mesh}.glb`, built: false }));
+    return () => {
+      live = false;
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [mesh, patternUrl, selectionsKey]);
+
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    if (!el || !model) return;
     async function applyPattern() {
+      if (model!.built) {
+        // Pattern is already embedded in the built model.
+        setReady(true);
+        setCanAR(Boolean(el!.canActivateAR));
+        return;
+      }
       try {
         const texture = await el!.createTexture(textureUrl(patternUrl));
         for (const m of el!.model?.materials ?? []) {
@@ -54,13 +79,13 @@ export function ProductViewer({ mesh, patternUrl, light, alt }: Props) {
     el.addEventListener("load", applyPattern);
     el.addEventListener("error", () => setFailed(true));
     return () => el.removeEventListener("load", applyPattern);
-  }, [patternUrl, mesh]);
+  }, [model, patternUrl]);
 
   return (
     <div className="relative overflow-hidden rounded-2xl border-2 border-ink bg-white">
       <model-viewer
         ref={ref}
-        src={`/models/${mesh}.glb`}
+        src={model?.src}
         alt={alt}
         ar=""
         ar-modes="webxr scene-viewer quick-look"
