@@ -65,8 +65,8 @@ orders/get {checkoutId} ─► 404 until paid (expected)
 
 - Mobile-first: it will be demoed on a phone.
 - Single repo, deployable to Vercel in minutes.
-- **The demo never stalls.** Mock anything slow with a fallback, and cache one successful generation (JSON + image) in `public/fallback/`.
-- **Out of scope today:** AR, 3D file export, iMessage, accounts.
+- **The demo never stalls.** Mock anything slow with a fallback, and cache one successful generation (JSON + image) in `public/demo/`, and `/design?demo=1` uses it.
+- **Out of scope today:** accounts, iMessage, 3D file export, wear metrics. (AR is now IN scope via `<model-viewer>` + AR Quick Look.)
 
 ### Judging / submission
 
