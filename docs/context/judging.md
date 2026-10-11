@@ -37,3 +37,4 @@ Append one row per checkpoint. Be harsh: the judges will be.
 | 12:30 | 0/4 | 4/18 | No Arcade call, no public link, not deployed | Decide platform, then build generation and deploy |
 | 12:42 | 3/4 | 11/18 | AR not yet verified on a real iPhone; live demo not rehearsed; inspiration kit missing | Cassius tests AR on iPhone; build barcode + photo inspiration |
 | 2:05 | 3/4 | 13/18 | No rehearsal; jewelry missing; Gemini free tier flaky | Add jewelry, rehearse with `?demo=1`, submit by 3:00 |
+| 2:30 | 3/4 | 14/18 | Rehearsal still open; light phase 2 (SunCalc, recolor) not built | Cassius rehearses `docs/process/demo-script.md` on iPhone; submit by 3:00 |
