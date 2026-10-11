@@ -43,3 +43,7 @@ next-env.d.ts
 .arcade-api/
 !.env.example
 .playwright-mcp/
+
+# Demo recordings (may contain personal info)
+Demo Video/
+*.mov
