@@ -1,5 +1,5 @@
 import { ARCHETYPES, ARCHETYPE_IDS, type ArchetypeId, type Swatch } from "./quiz/archetypes";
-import { QUESTIONS } from "./quiz/questions";
+import { ALL_QUESTIONS } from "./quiz/bank";
 
 export type QuizAnswer = { questionId: string; optionId: string };
 
@@ -23,7 +23,7 @@ const STORAGE_KEY = "arcade-lite:profile";
 export function scoreAnswers(answers: QuizAnswer[]): Record<ArchetypeId, number> {
   const scores = Object.fromEntries(ARCHETYPE_IDS.map((id) => [id, 0])) as Record<ArchetypeId, number>;
   for (const { questionId, optionId } of answers) {
-    const option = QUESTIONS[questionId]?.options.find((o) => o.id === optionId);
+    const option = ALL_QUESTIONS[questionId]?.options.find((o) => o.id === optionId);
     if (!option) continue;
     for (const [id, w] of Object.entries(option.weights)) scores[id as ArchetypeId] += w ?? 0;
   }

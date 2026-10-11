@@ -1,0 +1,1566 @@
+{
+  "generatedBy": "gemini-flash-latest",
+  "generatedAt": "2026-10-11T20:50:11.981Z",
+  "questions": [
+    {
+      "id": "b-coffee-order",
+      "topic": "coffee-order",
+      "kicker": "Daily Fuel",
+      "prompt": "What is your everyday caffeine fix?",
+      "options": [
+        {
+          "id": "brown-sugar-shaken-espresso-in-a-0",
+          "label": "Brown sugar shaken espresso in a jar",
+          "emoji": "☕",
+          "color": "#C29B7F",
+          "keyword": "Spiced",
+          "weights": {
+            "sunlit-archivist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "blended-strawberry-energy-freeze-1",
+          "label": "Blended strawberry energy freeze",
+          "emoji": "🧋",
+          "color": "#FF2E93",
+          "keyword": "Electric",
+          "weights": {
+            "neon-maximalist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "single-origin-flat-white-with-oa-2",
+          "label": "Single-origin flat white with oat milk",
+          "emoji": "🥛",
+          "color": "#EAE6E1",
+          "keyword": "Polished",
+          "weights": {
+            "quiet-luxe": 3
+          },
+          "next": null
+        },
+        {
+          "id": "iced-vanilla-latte-sipped-on-a-b-3",
+          "label": "Iced vanilla latte sipped on a bench",
+          "emoji": "🧊",
+          "color": "#A2C4C9",
+          "keyword": "Breezy",
+          "weights": {
+            "salt-air-romantic": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-everyday-shoes",
+      "topic": "everyday-shoes",
+      "kicker": "Footwear Check",
+      "prompt": "What shoes are currently by your door?",
+      "options": [
+        {
+          "id": "scuffed-oxfords-or-chunky-loafer-0",
+          "label": "Scuffed oxfords or chunky loafers",
+          "emoji": "👞",
+          "color": "#2B2118",
+          "keyword": "Scholarly",
+          "weights": {
+            "midnight-scholar": 3
+          },
+          "next": null
+        },
+        {
+          "id": "trail-runners-caked-in-dry-dirt-1",
+          "label": "Trail runners caked in dry dirt",
+          "emoji": "🥾",
+          "color": "#5C6B47",
+          "keyword": "Earthy",
+          "weights": {
+            "wild-botanist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "vintage-leather-boots-from-ebay-2",
+          "label": "Vintage leather boots from eBay",
+          "emoji": "👢",
+          "color": "#8B5A2B",
+          "keyword": "Patina",
+          "weights": {
+            "sunlit-archivist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "platform-sneakers-with-neon-lace-3",
+          "label": "Platform sneakers with neon laces",
+          "emoji": "👟",
+          "color": "#00F5D4",
+          "keyword": "Dynamic",
+          "weights": {
+            "neon-maximalist": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-group-chat-role",
+      "topic": "group-chat-role",
+      "kicker": "Social Dynamics",
+      "prompt": "What is your exact role in the group chat?",
+      "options": [
+        {
+          "id": "lurking-silently-and-liking-the--0",
+          "label": "Lurking silently and liking the plans",
+          "emoji": "🕶️",
+          "color": "#D6D1CD",
+          "keyword": "Minimal",
+          "weights": {
+            "quiet-luxe": 3
+          },
+          "next": null
+        },
+        {
+          "id": "sending-photos-of-sunsets-and-sh-1",
+          "label": "Sending photos of sunsets and shells",
+          "emoji": "🌅",
+          "color": "#79A9D1",
+          "keyword": "Dreamy",
+          "weights": {
+            "salt-air-romantic": 3
+          },
+          "next": null
+        },
+        {
+          "id": "dropping-long-voice-notes-at-2-a-2",
+          "label": "Dropping long voice notes at 2 AM",
+          "emoji": "🎙️",
+          "color": "#4A154B",
+          "keyword": "Nocturnal",
+          "weights": {
+            "midnight-scholar": 3
+          },
+          "next": null
+        },
+        {
+          "id": "sharing-photos-of-weird-bugs-and-3",
+          "label": "Sharing photos of weird bugs and moss",
+          "emoji": "🍄",
+          "color": "#3B5323",
+          "keyword": "Foraged",
+          "weights": {
+            "wild-botanist": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-lock-screen",
+      "topic": "lock-screen",
+      "kicker": "Screen Time",
+      "prompt": "What is your current phone lock screen?",
+      "options": [
+        {
+          "id": "a-blurry-film-photo-from-last-su-0",
+          "label": "A blurry film photo from last summer",
+          "emoji": "🎞️",
+          "color": "#DDA15E",
+          "keyword": "Nostalgic",
+          "weights": {
+            "sunlit-archivist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "chaotic-photo-dump-collage-with--1",
+          "label": "Chaotic photo dump collage with stickers",
+          "emoji": "🪩",
+          "color": "#FF007F",
+          "keyword": "Hyper",
+          "weights": {
+            "neon-maximalist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "solid-slate-gray-and-standard-cl-2",
+          "label": "Solid slate gray and standard clock",
+          "emoji": "📱",
+          "color": "#B0B5B3",
+          "keyword": "Subtle",
+          "weights": {
+            "quiet-luxe": 3
+          },
+          "next": null
+        },
+        {
+          "id": "sun-flare-hitting-gentle-ocean-w-3",
+          "label": "Sun flare hitting gentle ocean waves",
+          "emoji": "🌊",
+          "color": "#8ECAE6",
+          "keyword": "Coastal",
+          "weights": {
+            "salt-air-romantic": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-shower-routine",
+      "topic": "shower-routine",
+      "kicker": "Self Care",
+      "prompt": "What does your daily shower look like?",
+      "options": [
+        {
+          "id": "midnight-shower-with-amber-bath--0",
+          "label": "Midnight shower with amber bath gel",
+          "emoji": "🌙",
+          "color": "#38184C",
+          "keyword": "Moody",
+          "weights": {
+            "midnight-scholar": 3
+          },
+          "next": null
+        },
+        {
+          "id": "steamy-rinse-surrounded-by-eucal-1",
+          "label": "Steamy rinse surrounded by eucalyptus",
+          "emoji": "🌿",
+          "color": "#4F772D",
+          "keyword": "Herbal",
+          "weights": {
+            "wild-botanist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "golden-hour-shower-with-vinyl-pl-2",
+          "label": "Golden hour shower with vinyl playing",
+          "emoji": "🚿",
+          "color": "#F4A261",
+          "keyword": "Warm",
+          "weights": {
+            "sunlit-archivist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "morning-blast-with-glitter-body--3",
+          "label": "Morning blast with glitter body scrub",
+          "emoji": "✨",
+          "color": "#FF0055",
+          "keyword": "Vivid",
+          "weights": {
+            "neon-maximalist": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-packing-style",
+      "topic": "packing-style",
+      "kicker": "Getaway Bag",
+      "prompt": "How do you pack for a weekend trip?",
+      "options": [
+        {
+          "id": "monochromatic-capsules-in-sleek--0",
+          "label": "Monochromatic capsules in sleek cubes",
+          "emoji": "🧳",
+          "color": "#E3D5CA",
+          "keyword": "Streamlined",
+          "weights": {
+            "quiet-luxe": 3
+          },
+          "next": null
+        },
+        {
+          "id": "oversized-linen-tote-with-one-sw-1",
+          "label": "Oversized linen tote with one swimsuit",
+          "emoji": "🧺",
+          "color": "#BEE1E6",
+          "keyword": "Casual",
+          "weights": {
+            "salt-air-romantic": 3
+          },
+          "next": null
+        },
+        {
+          "id": "half-the-suitcase-is-just-hardco-2",
+          "label": "Half the suitcase is just hardcovers",
+          "emoji": "📚",
+          "color": "#1D2D44",
+          "keyword": "Heavy",
+          "weights": {
+            "midnight-scholar": 3
+          },
+          "next": null
+        },
+        {
+          "id": "canvas-duffel-stuffed-with-trail-3",
+          "label": "Canvas duffel stuffed with trail gear",
+          "emoji": "🎒",
+          "color": "#606C38",
+          "keyword": "Organic",
+          "weights": {
+            "wild-botanist": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-camera-roll",
+      "topic": "camera-roll",
+      "kicker": "Photo Album",
+      "prompt": "What fills up your camera roll most?",
+      "options": [
+        {
+          "id": "thrift-store-tags-and-ornate-mir-0",
+          "label": "Thrift store tags and ornate mirrors",
+          "emoji": "🪞",
+          "color": "#BC6C25",
+          "keyword": "Storied",
+          "weights": {
+            "sunlit-archivist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "high-contrast-party-candids-with-1",
+          "label": "High-contrast party candids with flash",
+          "emoji": "📸",
+          "color": "#7209B7",
+          "keyword": "Clashing",
+          "weights": {
+            "neon-maximalist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "crisp-architectural-lines-and-sh-2",
+          "label": "Crisp architectural lines and shadows",
+          "emoji": "🏛️",
+          "color": "#CED4DA",
+          "keyword": "Geometric",
+          "weights": {
+            "quiet-luxe": 3
+          },
+          "next": null
+        },
+        {
+          "id": "golden-light-on-seaside-sidewalk-3",
+          "label": "Golden light on seaside sidewalks",
+          "emoji": "🌾",
+          "color": "#90E0EF",
+          "keyword": "Hazy",
+          "weights": {
+            "salt-air-romantic": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-karaoke-anthem",
+      "topic": "karaoke-anthem",
+      "kicker": "Late Night",
+      "prompt": "What song are you picking at karaoke?",
+      "options": [
+        {
+          "id": "dramatic-alternative-ballad-with-0",
+          "label": "Dramatic alternative ballad with cello",
+          "emoji": "🎻",
+          "color": "#22223B",
+          "keyword": "Theatrical",
+          "weights": {
+            "midnight-scholar": 3
+          },
+          "next": null
+        },
+        {
+          "id": "acoustic-folk-tune-about-pine-tr-1",
+          "label": "Acoustic folk tune about pine trees",
+          "emoji": "🌲",
+          "color": "#31572C",
+          "keyword": "Wildwood",
+          "weights": {
+            "wild-botanist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "classic-fleetwood-mac-with-vocal-2",
+          "label": "Classic Fleetwood Mac with vocal runs",
+          "emoji": "🎙️",
+          "color": "#E76F51",
+          "keyword": "Vintage",
+          "weights": {
+            "sunlit-archivist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "y2k-bubblegum-dance-hit-at-full--3",
+          "label": "Y2K bubblegum dance hit at full volume",
+          "emoji": "🍭",
+          "color": "#F72585",
+          "keyword": "Joyful",
+          "weights": {
+            "neon-maximalist": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-grocery-basket",
+      "topic": "grocery-basket",
+      "kicker": "Market Run",
+      "prompt": "What is an instant buy at the market?",
+      "options": [
+        {
+          "id": "sourdough-boule-and-flake-salt-0",
+          "label": "Sourdough boule and flake salt",
+          "emoji": "🥖",
+          "color": "#F5EBE0",
+          "keyword": "Curated",
+          "weights": {
+            "quiet-luxe": 3
+          },
+          "next": null
+        },
+        {
+          "id": "fresh-peaches-and-chilled-sparkl-1",
+          "label": "Fresh peaches and chilled sparkling cider",
+          "emoji": "🍑",
+          "color": "#CAD2C5",
+          "keyword": "Airy",
+          "weights": {
+            "salt-air-romantic": 3
+          },
+          "next": null
+        },
+        {
+          "id": "dark-chocolate-and-loose-black-t-2",
+          "label": "Dark chocolate and loose black tea",
+          "emoji": "🍫",
+          "color": "#2C1A1D",
+          "keyword": "Rich",
+          "weights": {
+            "midnight-scholar": 3
+          },
+          "next": null
+        },
+        {
+          "id": "local-wildflower-honey-and-rosem-3",
+          "label": "Local wildflower honey and rosemary",
+          "emoji": "🍯",
+          "color": "#90A955",
+          "keyword": "Natural",
+          "weights": {
+            "wild-botanist": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-desk-clutter",
+      "topic": "desk-clutter",
+      "kicker": "Workspace",
+      "prompt": "What is sitting on your desk right now?",
+      "options": [
+        {
+          "id": "antique-brass-tray-with-fountain-0",
+          "label": "Antique brass tray with fountain pens",
+          "emoji": "🖋️",
+          "color": "#C59B27",
+          "keyword": "Collected",
+          "weights": {
+            "sunlit-archivist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "rainbow-highlighters-and-candy-w-1",
+          "label": "Rainbow highlighters and candy wrappers",
+          "emoji": "🍬",
+          "color": "#390099",
+          "keyword": "Playful",
+          "weights": {
+            "neon-maximalist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "laptop-glass-of-water-nothing-el-2",
+          "label": "Laptop, glass of water, nothing else",
+          "emoji": "💻",
+          "color": "#F8F9FA",
+          "keyword": "Sparse",
+          "weights": {
+            "quiet-luxe": 3
+          },
+          "next": null
+        },
+        {
+          "id": "jar-of-sea-glass-and-handwritten-3",
+          "label": "Jar of sea glass and handwritten notes",
+          "emoji": "🐚",
+          "color": "#A8DADC",
+          "keyword": "Soft",
+          "weights": {
+            "salt-air-romantic": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-bedside-table",
+      "topic": "bedside-table",
+      "kicker": "Nightstand",
+      "prompt": "What lives on your nightstand right now?",
+      "options": [
+        {
+          "id": "leaning-stack-of-mystery-paperba-0",
+          "label": "Leaning stack of mystery paperbacks",
+          "emoji": "📖",
+          "color": "#1B263B",
+          "keyword": "Literary",
+          "weights": {
+            "midnight-scholar": 3
+          },
+          "next": null
+        },
+        {
+          "id": "propagated-pothos-cuttings-in-gl-1",
+          "label": "Propagated pothos cuttings in glass",
+          "emoji": "🌱",
+          "color": "#2D6A4F",
+          "keyword": "Growing",
+          "weights": {
+            "wild-botanist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "woven-trinket-dish-and-an-amber--2",
+          "label": "Woven trinket dish and an amber lamp",
+          "emoji": "🪔",
+          "color": "#D4A373",
+          "keyword": "Warmth",
+          "weights": {
+            "sunlit-archivist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "glow-stars-and-a-colorful-nightl-3",
+          "label": "Glow stars and a colorful nightlight",
+          "emoji": "⭐",
+          "color": "#FF006E",
+          "keyword": "Bright",
+          "weights": {
+            "neon-maximalist": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-tote-bag-contents",
+      "topic": "tote-bag-contents",
+      "kicker": "Carry On",
+      "prompt": "What is at the bottom of your tote bag?",
+      "options": [
+        {
+          "id": "minimal-cardholder-and-sleek-lip-0",
+          "label": "Minimal cardholder and sleek lip oil",
+          "emoji": "💄",
+          "color": "#E0AFA0",
+          "keyword": "Chic",
+          "weights": {
+            "quiet-luxe": 3
+          },
+          "next": null
+        },
+        {
+          "id": "tangle-of-earphones-and-salty-su-1",
+          "label": "Tangle of earphones and salty sunglasses",
+          "emoji": "🕶️",
+          "color": "#48CAE4",
+          "keyword": "Carefree",
+          "weights": {
+            "salt-air-romantic": 3
+          },
+          "next": null
+        },
+        {
+          "id": "bound-notebook-and-an-old-brass--2",
+          "label": "Bound notebook and an old brass key",
+          "emoji": "🗝️",
+          "color": "#14213D",
+          "keyword": "Gothic",
+          "weights": {
+            "midnight-scholar": 3
+          },
+          "next": null
+        },
+        {
+          "id": "pocket-folding-knife-and-a-smoot-3",
+          "label": "Pocket folding knife and a smooth acorn",
+          "emoji": "🌰",
+          "color": "#403D39",
+          "keyword": "Woodland",
+          "weights": {
+            "wild-botanist": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-sunday-afternoon",
+      "topic": "sunday-afternoon",
+      "kicker": "Day Off",
+      "prompt": "Where do you vanish on a Sunday?",
+      "options": [
+        {
+          "id": "browsing-dusty-crates-at-the-fle-0",
+          "label": "Browsing dusty crates at the flea market",
+          "emoji": "📻",
+          "color": "#B08968",
+          "keyword": "Wandering",
+          "weights": {
+            "sunlit-archivist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "roller-skating-through-a-vibrant-1",
+          "label": "Roller skating through a vibrant pop-up",
+          "emoji": "🛼",
+          "color": "#FF477E",
+          "keyword": "Energetic",
+          "weights": {
+            "neon-maximalist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "sipping-matcha-in-an-all-white-c-2",
+          "label": "Sipping matcha in an all-white cafe",
+          "emoji": "🍵",
+          "color": "#E8E8E4",
+          "keyword": "Serene",
+          "weights": {
+            "quiet-luxe": 3
+          },
+          "next": null
+        },
+        {
+          "id": "strolling-along-a-breezy-shoreli-3",
+          "label": "Strolling along a breezy shoreline",
+          "emoji": "🏖️",
+          "color": "#83C5BE",
+          "keyword": "Salty",
+          "weights": {
+            "salt-air-romantic": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-snack-drawer",
+      "topic": "snack-drawer",
+      "kicker": "Munchies",
+      "prompt": "Pick your ultimate late-night snack:",
+      "options": [
+        {
+          "id": "espresso-beans-coated-in-dark-co-0",
+          "label": "Espresso beans coated in dark cocoa",
+          "emoji": "☕",
+          "color": "#331832",
+          "keyword": "Intense",
+          "weights": {
+            "midnight-scholar": 3
+          },
+          "next": null
+        },
+        {
+          "id": "dried-mango-slices-and-raw-almon-1",
+          "label": "Dried mango slices and raw almonds",
+          "emoji": "🥭",
+          "color": "#588157",
+          "keyword": "Crisp",
+          "weights": {
+            "wild-botanist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "warm-toast-with-homemade-berry-j-2",
+          "label": "Warm toast with homemade berry jam",
+          "emoji": "🍞",
+          "color": "#CB997E",
+          "keyword": "Rustic",
+          "weights": {
+            "sunlit-archivist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "sour-gummy-worms-and-electric-bl-3",
+          "label": "Sour gummy worms and electric blue soda",
+          "emoji": "🪱",
+          "color": "#3A86FF",
+          "keyword": "Chaotic",
+          "weights": {
+            "neon-maximalist": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-candle-scent",
+      "topic": "candle-scent",
+      "kicker": "Mood Lighting",
+      "prompt": "Which candle are you burning all day?",
+      "options": [
+        {
+          "id": "cashmere-cedar-and-subtle-musk-0",
+          "label": "Cashmere, cedar, and subtle musk",
+          "emoji": "🕯️",
+          "color": "#D5BDAF",
+          "keyword": "Tactile",
+          "weights": {
+            "quiet-luxe": 3
+          },
+          "next": null
+        },
+        {
+          "id": "sea-salt-driftwood-and-clean-lin-1",
+          "label": "Sea salt, driftwood, and clean linen",
+          "emoji": "🌊",
+          "color": "#B7E4C7",
+          "keyword": "Fresh",
+          "weights": {
+            "salt-air-romantic": 3
+          },
+          "next": null
+        },
+        {
+          "id": "tobacco-leaf-old-paper-and-clove-2",
+          "label": "Tobacco leaf, old paper, and clove",
+          "emoji": "📜",
+          "color": "#2F1B25",
+          "keyword": "Heavy",
+          "weights": {
+            "midnight-scholar": 3
+          },
+          "next": null
+        },
+        {
+          "id": "tomato-vine-crushed-moss-and-rai-3",
+          "label": "Tomato vine, crushed moss, and rain",
+          "emoji": "🍅",
+          "color": "#1B4332",
+          "keyword": "Botanical",
+          "weights": {
+            "wild-botanist": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-water-bottle",
+      "topic": "water-bottle",
+      "kicker": "Hydration Vibe",
+      "prompt": "How does your water bottle look?",
+      "options": [
+        {
+          "id": "mismatched-stickers-from-park-ro-0",
+          "label": "Mismatched stickers from park roadtrips",
+          "emoji": "🗺️",
+          "color": "#DDA15E",
+          "keyword": "Traveler",
+          "weights": {
+            "sunlit-archivist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "holographic-tumbler-covered-in-g-1",
+          "label": "Holographic tumbler covered in glitter",
+          "emoji": "✨",
+          "color": "#FF5400",
+          "keyword": "Bold",
+          "weights": {
+            "neon-maximalist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "matte-stainless-steel-with-zero--2",
+          "label": "Matte stainless steel with zero logos",
+          "emoji": "🧊",
+          "color": "#D8DBE2",
+          "keyword": "Clean",
+          "weights": {
+            "quiet-luxe": 3
+          },
+          "next": null
+        },
+        {
+          "id": "frosted-pastel-flask-with-a-rope-3",
+          "label": "Frosted pastel flask with a rope handle",
+          "emoji": "🪢",
+          "color": "#98D8C8",
+          "keyword": "Mellow",
+          "weights": {
+            "salt-air-romantic": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-getting-ready-playlist",
+      "topic": "getting-ready-playlist",
+      "kicker": "Pre-Game",
+      "prompt": "What plays while getting ready to go out?",
+      "options": [
+        {
+          "id": "moody-dark-synthwave-or-cello-su-0",
+          "label": "Moody dark synthwave or cello suites",
+          "emoji": "🎧",
+          "color": "#0F141C",
+          "keyword": "Somber",
+          "weights": {
+            "midnight-scholar": 3
+          },
+          "next": null
+        },
+        {
+          "id": "acoustic-indie-folk-with-whistli-1",
+          "label": "Acoustic indie folk with whistling",
+          "emoji": "🪕",
+          "color": "#3A5A40",
+          "keyword": "Rooted",
+          "weights": {
+            "wild-botanist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "dusty-seventies-soul-on-vinyl-2",
+          "label": "Dusty seventies soul on vinyl",
+          "emoji": "🎷",
+          "color": "#CD7F32",
+          "keyword": "Groovy",
+          "weights": {
+            "sunlit-archivist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "high-speed-eurodance-remix-at-ma-3",
+          "label": "High-speed Eurodance remix at max blast",
+          "emoji": "🪩",
+          "color": "#CCFF00",
+          "keyword": "Loud",
+          "weights": {
+            "neon-maximalist": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-browser-tabs",
+      "topic": "browser-tabs",
+      "kicker": "Digital Life",
+      "prompt": "What dominates your open browser tabs?",
+      "options": [
+        {
+          "id": "three-neat-tabs-for-design-portf-0",
+          "label": "Three neat tabs for design portfolios",
+          "emoji": "📂",
+          "color": "#E2E8F0",
+          "keyword": "Tidy",
+          "weights": {
+            "quiet-luxe": 3
+          },
+          "next": null
+        },
+        {
+          "id": "local-tide-charts-and-coastal-re-1",
+          "label": "Local tide charts and coastal rentals",
+          "emoji": "⛵",
+          "color": "#A2D2FF",
+          "keyword": "Drifting",
+          "weights": {
+            "salt-air-romantic": 3
+          },
+          "next": null
+        },
+        {
+          "id": "twenty-wikipedia-pages-on-ancien-2",
+          "label": "Twenty Wikipedia pages on ancient myths",
+          "emoji": "🏛️",
+          "color": "#1C2541",
+          "keyword": "Curious",
+          "weights": {
+            "midnight-scholar": 3
+          },
+          "next": null
+        },
+        {
+          "id": "care-guides-for-ferns-and-rare-f-3",
+          "label": "Care guides for ferns and rare ficus",
+          "emoji": "🪴",
+          "color": "#283618",
+          "keyword": "Verdant",
+          "weights": {
+            "wild-botanist": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-aim-status",
+      "topic": "aim-status",
+      "kicker": "Y2K Nostalgia",
+      "prompt": "Pick a nostalgic AIM away message:",
+      "options": [
+        {
+          "id": "lyrics-from-a-scratched-indie-ca-0",
+          "label": "Lyrics from a scratched indie cassette",
+          "emoji": "📼",
+          "color": "#9C6644",
+          "keyword": "Echoed",
+          "weights": {
+            "sunlit-archivist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "random-sparkles-and-dancing-glit-1",
+          "label": "RaNdOm sparkles and dancing glitter text",
+          "emoji": "👾",
+          "color": "#9D4EDD",
+          "keyword": "Flashy",
+          "weights": {
+            "neon-maximalist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "stepped-away-for-a-moment-2",
+          "label": "Stepped away for a moment.",
+          "emoji": "💬",
+          "color": "#BAC7BE",
+          "keyword": "Quiet",
+          "weights": {
+            "quiet-luxe": 3
+          },
+          "next": null
+        },
+        {
+          "id": "gone-to-watch-the-sunset-over-th-3",
+          "label": "Gone to watch the sunset over the pier",
+          "emoji": "🌅",
+          "color": "#64B5F6",
+          "keyword": "Peaceful",
+          "weights": {
+            "salt-air-romantic": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-thrift-find",
+      "topic": "thrift-find",
+      "kicker": "Jackpot",
+      "prompt": "Your holy grail thrift store score:",
+      "options": [
+        {
+          "id": "gilded-encyclopedia-set-from-190-0",
+          "label": "Gilded encyclopedia set from 1904",
+          "emoji": "📖",
+          "color": "#240046",
+          "keyword": "Scholastic",
+          "weights": {
+            "midnight-scholar": 3
+          },
+          "next": null
+        },
+        {
+          "id": "massive-terracotta-urn-with-aged-1",
+          "label": "Massive terracotta urn with aged patina",
+          "emoji": "🏺",
+          "color": "#52796F",
+          "keyword": "Earthy",
+          "weights": {
+            "wild-botanist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "hand-carved-wooden-mirror-frame-2",
+          "label": "Hand-carved wooden mirror frame",
+          "emoji": "🪞",
+          "color": "#B5651D",
+          "keyword": "Gilded",
+          "weights": {
+            "sunlit-archivist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "inflatable-metallic-bubble-chair-3",
+          "label": "Inflatable metallic bubble chair",
+          "emoji": "🪑",
+          "color": "#F72585",
+          "keyword": "Camp",
+          "weights": {
+            "neon-maximalist": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-dinner-party-dish",
+      "topic": "dinner-party-dish",
+      "kicker": "Potluck Role",
+      "prompt": "What are you bringing to dinner?",
+      "options": [
+        {
+          "id": "artisanal-cheese-plate-on-marble-0",
+          "label": "Artisanal cheese plate on marble stone",
+          "emoji": "🧀",
+          "color": "#EDEDE9",
+          "keyword": "Refined",
+          "weights": {
+            "quiet-luxe": 3
+          },
+          "next": null
+        },
+        {
+          "id": "citrus-olive-oil-cake-on-a-linen-1",
+          "label": "Citrus olive oil cake on a linen cloth",
+          "emoji": "🍋",
+          "color": "#80CED7",
+          "keyword": "Breezy",
+          "weights": {
+            "salt-air-romantic": 3
+          },
+          "next": null
+        },
+        {
+          "id": "slow-simmered-mushroom-and-red-w-2",
+          "label": "Slow-simmered mushroom and red wine stew",
+          "emoji": "🍲",
+          "color": "#3F0C10",
+          "keyword": "Brooding",
+          "weights": {
+            "midnight-scholar": 3
+          },
+          "next": null
+        },
+        {
+          "id": "enormous-bowl-of-wild-seasonal-g-3",
+          "label": "Enormous bowl of wild seasonal greens",
+          "emoji": "🥗",
+          "color": "#2D5A27",
+          "keyword": "Organic",
+          "weights": {
+            "wild-botanist": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-morning-alarm",
+      "topic": "morning-alarm",
+      "kicker": "Rise And Shine",
+      "prompt": "How does your morning alarm sound?",
+      "options": [
+        {
+          "id": "retro-wind-up-bell-on-the-dresse-0",
+          "label": "Retro wind-up bell on the dresser",
+          "emoji": "⏰",
+          "color": "#CC8B65",
+          "keyword": "Chiming",
+          "weights": {
+            "sunlit-archivist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "uptempo-hyperpop-blast-on-max-vo-1",
+          "label": "Uptempo hyperpop blast on max volume",
+          "emoji": "⚡",
+          "color": "#FA003F",
+          "keyword": "Jarring",
+          "weights": {
+            "neon-maximalist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "soft-ambient-vibraphone-chime-2",
+          "label": "Soft ambient vibraphone chime",
+          "emoji": "🔔",
+          "color": "#C9ADA7",
+          "keyword": "Gentle",
+          "weights": {
+            "quiet-luxe": 3
+          },
+          "next": null
+        },
+        {
+          "id": "distant-ocean-waves-and-sea-bree-3",
+          "label": "Distant ocean waves and sea breeze",
+          "emoji": "🌊",
+          "color": "#72EFDD",
+          "keyword": "Rhythmic",
+          "weights": {
+            "salt-air-romantic": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-keychain-situation",
+      "topic": "keychain-situation",
+      "kicker": "Pockets",
+      "prompt": "Describe your everyday keychain setup:",
+      "options": [
+        {
+          "id": "heavy-brass-skeleton-key-on-dark-0",
+          "label": "Heavy brass skeleton key on dark cord",
+          "emoji": "🗝️",
+          "color": "#1A1423",
+          "keyword": "Antiquated",
+          "weights": {
+            "midnight-scholar": 3
+          },
+          "next": null
+        },
+        {
+          "id": "woven-paracord-with-a-carved-aco-1",
+          "label": "Woven paracord with a carved acorn nut",
+          "emoji": "🌰",
+          "color": "#354F52",
+          "keyword": "Woody",
+          "weights": {
+            "wild-botanist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "vintage-motel-tag-and-brass-bott-2",
+          "label": "Vintage motel tag and brass bottle tab",
+          "emoji": "🏷️",
+          "color": "#A26744",
+          "keyword": "Souvenir",
+          "weights": {
+            "sunlit-archivist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "beaded-lanyard-with-tamagotchi-c-3",
+          "label": "Beaded lanyard with Tamagotchi charm",
+          "emoji": "🐣",
+          "color": "#06D6A0",
+          "keyword": "Playful",
+          "weights": {
+            "neon-maximalist": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-hoodie-collection",
+      "topic": "hoodie-collection",
+      "kicker": "Comfort Wear",
+      "prompt": "What is your favorite sweatshirt style?",
+      "options": [
+        {
+          "id": "heavyweight-unbranded-boxy-crewn-0",
+          "label": "Heavyweight unbranded boxy crewneck",
+          "emoji": "🧥",
+          "color": "#E5E5E5",
+          "keyword": "Neutral",
+          "weights": {
+            "quiet-luxe": 3
+          },
+          "next": null
+        },
+        {
+          "id": "sun-bleached-pullover-smelling-o-1",
+          "label": "Sun-bleached pullover smelling of salt",
+          "emoji": "⚓",
+          "color": "#5FA8D3",
+          "keyword": "Faded",
+          "weights": {
+            "salt-air-romantic": 3
+          },
+          "next": null
+        },
+        {
+          "id": "oversized-dark-varsity-knit-swea-2",
+          "label": "Oversized dark varsity knit sweater",
+          "emoji": "🧶",
+          "color": "#212529",
+          "keyword": "Classic",
+          "weights": {
+            "midnight-scholar": 3
+          },
+          "next": null
+        },
+        {
+          "id": "deep-green-sherpa-fleece-with-po-3",
+          "label": "Deep green sherpa fleece with pockets",
+          "emoji": "🌲",
+          "color": "#1E3F20",
+          "keyword": "Warm",
+          "weights": {
+            "wild-botanist": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-airport-arrival",
+      "topic": "airport-arrival",
+      "kicker": "Gate Check",
+      "prompt": "When do you get to your airport gate?",
+      "options": [
+        {
+          "id": "two-hours-early-reading-a-paperb-0",
+          "label": "Two hours early reading a paperback",
+          "emoji": "✈️",
+          "color": "#DEAB90",
+          "keyword": "Patient",
+          "weights": {
+            "sunlit-archivist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "running-through-tsa-in-vibrant-k-1",
+          "label": "Running through TSA in vibrant kicks",
+          "emoji": "🏃",
+          "color": "#FF007F",
+          "keyword": "Chaotic",
+          "weights": {
+            "neon-maximalist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "calculated-to-board-right-on-cue-2",
+          "label": "Calculated to board right on cue",
+          "emoji": "⏱️",
+          "color": "#D3D3D3",
+          "keyword": "Precise",
+          "weights": {
+            "quiet-luxe": 3
+          },
+          "next": null
+        },
+        {
+          "id": "early-to-sit-and-watch-planes-ov-3",
+          "label": "Early to sit and watch planes over water",
+          "emoji": "🪟",
+          "color": "#90E0EF",
+          "keyword": "Tranquil",
+          "weights": {
+            "salt-air-romantic": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-nail-aesthetic",
+      "topic": "nail-aesthetic",
+      "kicker": "Nail Art",
+      "prompt": "What is your manicure looking like?",
+      "options": [
+        {
+          "id": "deep-obsidian-or-dark-velvet-win-0",
+          "label": "Deep obsidian or dark velvet wine",
+          "emoji": "💅",
+          "color": "#120136",
+          "keyword": "Dramatic",
+          "weights": {
+            "midnight-scholar": 3
+          },
+          "next": null
+        },
+        {
+          "id": "clean-natural-nails-with-jojoba--1",
+          "label": "Clean natural nails with jojoba oil",
+          "emoji": "✨",
+          "color": "#748E63",
+          "keyword": "Bare",
+          "weights": {
+            "wild-botanist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "soft-tortoiseshell-glazed-finish-2",
+          "label": "Soft tortoiseshell glazed finish",
+          "emoji": "🐢",
+          "color": "#8C533E",
+          "keyword": "Artful",
+          "weights": {
+            "sunlit-archivist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "airbrushed-neon-checks-and-3d-ch-3",
+          "label": "Airbrushed neon checks and 3D charms",
+          "emoji": "💖",
+          "color": "#00F0FF",
+          "keyword": "Maximal",
+          "weights": {
+            "neon-maximalist": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-reading-habit",
+      "topic": "reading-habit",
+      "kicker": "Book Nook",
+      "prompt": "Where do you actually read books?",
+      "options": [
+        {
+          "id": "under-a-cashmere-throw-on-a-slee-0",
+          "label": "Under a cashmere throw on a sleek couch",
+          "emoji": "🛋️",
+          "color": "#E0E1DD",
+          "keyword": "Plush",
+          "weights": {
+            "quiet-luxe": 3
+          },
+          "next": null
+        },
+        {
+          "id": "on-a-faded-beach-towel-on-sandy--1",
+          "label": "On a faded beach towel on sandy grass",
+          "emoji": "🏖️",
+          "color": "#89C2D9",
+          "keyword": "Sunbaked",
+          "weights": {
+            "salt-air-romantic": 3
+          },
+          "next": null
+        },
+        {
+          "id": "deep-velvet-armchair-under-a-bra-2",
+          "label": "Deep velvet armchair under a brass lamp",
+          "emoji": "🪑",
+          "color": "#101935",
+          "keyword": "Studious",
+          "weights": {
+            "midnight-scholar": 3
+          },
+          "next": null
+        },
+        {
+          "id": "hammock-strung-up-between-two-ta-3",
+          "label": "Hammock strung up between two tall trees",
+          "emoji": "🏕️",
+          "color": "#2F4858",
+          "keyword": "Canopy",
+          "weights": {
+            "wild-botanist": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-rainy-day-plan",
+      "topic": "rainy-day-plan",
+      "kicker": "Downpour",
+      "prompt": "Rain is pouring outside. What now?",
+      "options": [
+        {
+          "id": "baking-cinnamon-loaf-and-playing-0",
+          "label": "Baking cinnamon loaf and playing vinyl",
+          "emoji": "🥧",
+          "color": "#C89666",
+          "keyword": "Cozy",
+          "weights": {
+            "sunlit-archivist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "fighting-games-with-rgb-light-st-1",
+          "label": "Fighting games with RGB light strips on",
+          "emoji": "🎮",
+          "color": "#9B5DE5",
+          "keyword": "Electric",
+          "weights": {
+            "neon-maximalist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "organizing-wardrobe-by-texture-a-2",
+          "label": "Organizing wardrobe by texture and tone",
+          "emoji": "🧺",
+          "color": "#E2DDD9",
+          "keyword": "Calm",
+          "weights": {
+            "quiet-luxe": 3
+          },
+          "next": null
+        },
+        {
+          "id": "watching-rain-hit-puddles-from-t-3",
+          "label": "Watching rain hit puddles from the porch",
+          "emoji": "🌧️",
+          "color": "#468FAF",
+          "keyword": "Reflective",
+          "weights": {
+            "salt-air-romantic": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-uber-rating-vibe",
+      "topic": "uber-rating-vibe",
+      "kicker": "Passenger Seat",
+      "prompt": "What is your energy inside a taxi?",
+      "options": [
+        {
+          "id": "gazing-out-rainy-windows-in-sile-0",
+          "label": "Gazing out rainy windows in silence",
+          "emoji": "🪟",
+          "color": "#1B1B2F",
+          "keyword": "Enigmatic",
+          "weights": {
+            "midnight-scholar": 3
+          },
+          "next": null
+        },
+        {
+          "id": "chatting-about-their-backyard-ga-1",
+          "label": "Chatting about their backyard garden",
+          "emoji": "🪴",
+          "color": "#40916C",
+          "keyword": "Friendly",
+          "weights": {
+            "wild-botanist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "humming-along-quietly-to-classic-2",
+          "label": "Humming along quietly to classic radio",
+          "emoji": "📻",
+          "color": "#B5838D",
+          "keyword": "Grounded",
+          "weights": {
+            "sunlit-archivist": 3
+          },
+          "next": null
+        },
+        {
+          "id": "swapping-viral-reels-with-friend-3",
+          "label": "Swapping viral reels with friends loudly",
+          "emoji": "📲",
+          "color": "#F15BB5",
+          "keyword": "Unfiltered",
+          "weights": {
+            "neon-maximalist": 3
+          },
+          "next": null
+        }
+      ]
+    },
+    {
+      "id": "b-souvenir-choice",
+      "topic": "souvenir-choice",
+      "kicker": "Mementos",
+      "prompt": "What souvenir do you bring back home?",
+      "options": [
+        {
+          "id": "ceramic-espresso-cup-from-a-loca-0",
+          "label": "Ceramic espresso cup from a local maker",
+          "emoji": "🏺",
+          "color": "#DFE0DF",
+          "keyword": "Understated",
+          "weights": {
+            "quiet-luxe": 3
+          },
+          "next": null
+        },
+        {
+          "id": "smooth-rounded-pebble-from-the-s-1",
+          "label": "Smooth rounded pebble from the shoreline",
+          "emoji": "🪨",
+          "color": "#61A5C2",
+          "keyword": "Tidal",
+          "weights": {
+            "salt-air-romantic": 3
+          },
+          "next": null
+        },
+        {
+          "id": "antique-copper-ruler-from-a-dust-2",
+          "label": "Antique copper ruler from a dusty store",
+          "emoji": "📐",
+          "color": "#231942",
+          "keyword": "Historic",
+          "weights": {
+            "midnight-scholar": 3
+          },
+          "next": null
+        },
+        {
+          "id": "pressed-fern-fronds-tucked-in-a--3",
+          "label": "Pressed fern fronds tucked in a journal",
+          "emoji": "🌿",
+          "color": "#134611",
+          "keyword": "Preserved",
+          "weights": {
+            "wild-botanist": 3
+          },
+          "next": null
+        }
+      ]
+    }
+  ]
+}

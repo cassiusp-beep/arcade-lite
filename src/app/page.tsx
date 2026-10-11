@@ -12,7 +12,7 @@ export default function Home() {
           <em className="text-accent">Let&rsquo;s name it.</em>
         </h1>
         <p className="mt-6 max-w-sm text-lg leading-snug text-muted">
-          Seven questions, zero judgment. Then we design something that could only be yours and show it in your room before you buy.
+          Ten questions about your actual life, zero judgment. Then we design something that could only be yours and show it in your room before you buy.
         </p>
       </div>
 

@@ -17,13 +17,13 @@ Shoppers miss having a stylist or store associate help them decide, and many don
 - **Build order:** see `docs/context/arcade.md` § Build order. Do not start a step until the previous one works end to end.
 - **Deadlines:** submission ~3:00pm PT (hard). Building continues until ~5:30pm PT.
 
-## The Journey (source of truth; status as of 1:50pm)
+## The Journey (source of truth)
 
-Cassius likes the current build: **extend it, don't rebuild or restyle it.** Work one integration at a time in this order. For each, offer 2–3 ways to combine with what exists (recommendation + time), wait for approval, then update this section once it works. Every step keeps a `?demo=1` fallback. New keys stay server-side behind our own `/api` routes.
+Cassius likes the current build: **extend it, don't rebuild or restyle it.** Work one integration at a time in this order. For each, offer 2–3 ways to combine with what exists (recommendation + time), wait for approval, then update this section once it works. Every step keeps a `?demo=1` fallback. New keys stay server-side behind our own `/api` routes. LLM: Gemini (free tier) via `GEMINI_API_KEY` in `.env.local` / Vercel; models listed at `generativelanguage.googleapis.com/v1beta/models`, default `gemini-flash-latest`.
 
 | # | Step | Status | Where |
 |---|---|---|---|
-| 1 | Vibe check: 10 generated Y2K/pop-culture questions, live aura card, skippable | Hand-written 7-question quiz exists (becomes the fallback) | `/quiz`, `src/lib/quiz/*` |
+| 1 | Vibe check: 10 generated Y2K/pop-culture questions, live aura card, skippable | **Done (2:05pm).** Gemini-written bank of 30 everyday-life questions (`scripts/gen-quiz-bank.mjs`, re-run to refresh); each quiz = Saturday + windowsill anchors + 8 random distinct topics; live aura card; skip question / skip quiz; `?demo=1` = fixed seed. Testers: keep it niche and real-life, no abstract or celebrity questions | `/quiz`, `src/lib/quiz/bank.ts`, `bank.json`, `src/components/aura-card.tsx` |
 | 2 | Soundtrack: 1–2 artists or a playlist; Spotify/Apple Music buttons are visual only | Not started | none yet |
 | 3 | Style profile: quiz + music → name, palette, keywords, design direction; shareable | Card, share link, OG image exist | `/profile`, `src/lib/profile.ts`, `/api/card` |
 | 4 | The ask: "what, and where in your space" + Surprise me (voice is a stretch) | Category grid + idea text exist | `/design`, `buildPrompt` in `src/lib/catalog.ts` |
