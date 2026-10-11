@@ -25,7 +25,15 @@ export function viewerLight(room: RoomLight): ViewerLight {
   return {
     exposure: Math.round(SIZE_GAIN[room.windowSize] * BRIGHT_GAIN[room.brightness] * 100) / 100,
     shadowSoftness: room.brightness === "sunny" ? 0.2 : room.brightness === "bright" ? 0.6 : 1,
-    wash: FACING_WASH[room.facing],
+    // A measured photo beats the compass guess for color temperature.
+    wash:
+      room.warmth === undefined
+        ? FACING_WASH[room.facing]
+        : room.warmth > 0.08
+          ? "rgb(255 190 120 / 0.18)"
+          : room.warmth < -0.03
+            ? "rgb(170 195 230 / 0.18)"
+            : "rgb(255 255 255 / 0)",
   };
 }
 

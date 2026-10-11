@@ -68,7 +68,10 @@ export function ProductViewer({ mesh, patternUrl, light, alt }: Props) {
         ar-scale="fixed"
         camera-controls=""
         touch-action="pan-y"
-        camera-orbit="30deg 70deg auto"
+        camera-orbit="20deg 78deg auto"
+        auto-rotate=""
+        auto-rotate-delay="1500"
+        rotation-per-second="20deg"
         shadow-intensity="1"
         shadow-softness={String(light.shadowSoftness)}
         exposure={String(light.exposure)}

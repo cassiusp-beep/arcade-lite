@@ -67,7 +67,8 @@ export default function RoomPage() {
     const { brightness, warmth } = estimateFromPixels(ctx.getImageData(0, 0, 64, 64).data);
     setRoom((r) => ({ ...r, brightness, warmth }));
     const tone = warmth > 0.08 ? "warm" : warmth < -0.03 ? "cool" : "neutral";
-    setPhotoNote(`From your photo: ${BRIGHTNESS.find((b) => b.id === brightness)!.label.toLowerCase()}, ${tone} light.`);
+    const label = BRIGHTNESS.find((b) => b.id === brightness)!.label;
+    setPhotoNote(`Measured ${label.toLowerCase()}, ${tone} light. We set "${label}" below and tinted the preview to match.`);
   }
 
   async function buy() {
@@ -100,6 +101,24 @@ export default function RoomPage() {
         {lightAdvice(room, product.categoryName)}
       </p>
 
+      <section className="mt-5 rounded-2xl border border-dashed border-ink p-4">
+        <h2 className="font-semibold">Let your room tell us</h2>
+        <p className="mt-1 text-sm leading-snug text-muted">
+          Take one photo of the room in daylight. We measure how bright and how warm the light is and fill in the answer for you.
+          The photo never leaves your phone.
+        </p>
+        <input ref={fileRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => e.target.files?.[0] && readPhoto(e.target.files[0])} />
+        <button type="button" onClick={() => fileRef.current?.click()} className="mt-3 flex h-12 w-full items-center justify-center rounded-full bg-ink text-sm font-semibold text-paper">
+          {photoNote ? "Take another photo" : "Read my light from a photo"}
+        </button>
+        {photoNote && (
+          <p className="mt-2 text-sm" aria-live="polite">
+            {photoNote}
+          </p>
+        )}
+      </section>
+
+      <p className="mt-5 text-sm text-muted">Or tell us yourself. Window direction is the one thing a photo can&rsquo;t know.</p>
       <Question label="Your main window">
         {SIZES.map((o) => (
           <Chip key={o.id} active={room.windowSize === o.id} onClick={() => setRoom({ ...room, windowSize: o.id })}>
@@ -116,17 +135,12 @@ export default function RoomPage() {
       </Question>
       <Question label="On a clear afternoon it's">
         {BRIGHTNESS.map((o) => (
-          <Chip key={o.id} active={room.brightness === o.id} onClick={() => setRoom({ ...room, brightness: o.id })}>
+          <Chip key={o.id} active={room.brightness === o.id} onClick={() => setRoom({ ...room, brightness: o.id, warmth: undefined })}>
             {o.label}
           </Chip>
         ))}
       </Question>
 
-      <input ref={fileRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={(e) => e.target.files?.[0] && readPhoto(e.target.files[0])} />
-      <button type="button" onClick={() => fileRef.current?.click()} className="mt-5 flex h-12 items-center justify-center rounded-full border border-ink text-sm font-semibold">
-        Not sure? Snap your room and we&rsquo;ll read the light
-      </button>
-      {photoNote && <p className="mt-2 text-center text-sm text-muted">{photoNote} Photo stays on your phone.</p>}
 
       <button
         type="button"

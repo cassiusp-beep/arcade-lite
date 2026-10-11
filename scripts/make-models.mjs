@@ -30,7 +30,8 @@ function cushion(w, h, depth, segs = 32) {
     for (let i = 0; i < pos.count; i++) {
       const x = pos.getX(i) / (w / 2), y = pos.getY(i) / (h / 2);
       const puff = Math.cos((x * Math.PI) / 2) * Math.cos((y * Math.PI) / 2);
-      pos.setZ(i, side * (depth / 2) * Math.pow(Math.max(puff, 0), 0.6));
+      // Bulge toward +z, then turn the back face around so the halves bulge apart.
+      pos.setZ(i, (depth / 2) * Math.pow(Math.max(puff, 0), 0.6));
     }
     if (side === -1) g.rotateY(Math.PI);
     g.computeVertexNormals();
