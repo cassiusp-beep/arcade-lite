@@ -188,6 +188,13 @@ export default function DesignPage() {
         </p>
       )}
 
+      <Link href="/inspire" className="mt-5 flex min-h-12 items-center justify-between rounded-2xl border border-dashed border-ink px-4 py-3 text-sm">
+        <span>
+          <span className="font-semibold">Saw something in a store?</span> Snap it to steer your design
+        </span>
+        <span aria-hidden>→</span>
+      </Link>
+
       <label className="mt-6 block text-sm font-medium" htmlFor="idea">
         Anything specific? <span className="font-normal text-muted">(optional)</span>
       </label>

@@ -8,10 +8,10 @@
 
 | Gate | Pass condition | Status | Evidence / link |
 |---|---|---|---|
-| Public GitHub repo | Repo is public, README explains the project and how to run it, **no secrets committed** (`.env.local` gitignored, key never in history) | ☐ | |
-| Public link | A URL a judge can open on their own device, with no install, login or allowlist | ☐ | |
+| Public GitHub repo | Repo is public, README explains the project and how to run it, **no secrets committed** (`.env.local` gitignored, key never in history) | ☑ | https://github.com/cassiusp-beep/arcade-lite |
+| Public link | A URL a judge can open on their own device, with no install, login or allowlist | ☑ | https://arcade-lite.vercel.app |
 | Live demo | Works live on stage on a phone. A cached fallback covers slow Arcade jobs, and it's rehearsed at least once end to end | ☐ | |
-| Uses the Arcade API | Real calls to `platform.arcade.ai` (generation → product → checkout URL), visible in the demo | ☐ | |
+| Uses the Arcade API | Real calls to `platform.arcade.ai` (generation → product → checkout URL), visible in the demo | ☑ | Real run 12:38: pillow generated in 57s, $88.35, checkout link created |
 
 ## Scored criteria
 
@@ -35,3 +35,4 @@ Append one row per checkpoint. Be harsh: the judges will be.
 | Time | Gates | Score | Biggest gap | Next action |
 |---|---|---|---|---|
 | 12:30 | 0/4 | 4/18 | No Arcade call, no public link, not deployed | Decide platform, then build generation and deploy |
+| 12:42 | 3/4 | 11/18 | AR not yet verified on a real iPhone; live demo not rehearsed; inspiration kit missing | Cassius tests AR on iPhone; build barcode + photo inspiration |

@@ -10,7 +10,8 @@ You are the Conductor. You are the main session, and you are the only one who ca
 
 Shoppers miss having a stylist or store associate help them decide, and many don't know their own taste well enough to design a product. Arcade Lite gives them a personal style identity first. It then helps them design a custom product with the Arcade API and see it in their own space before buying.
 
-- **Stack:** Next.js (App Router, `src/`) + TypeScript + Tailwind, deployed on Vercel. The Arcade API key lives server-side in `ARCADE_API_KEY`.
+- **Stack:** Next.js (App Router, `src/`) + TypeScript + Tailwind, `<model-viewer>` for 3D and AR Quick Look, deployed on Vercel. Mobile Safari on iPhone is the demo target.
+- **Live:** https://arcade-lite.vercel.app · repo https://github.com/cassiusp-beep/arcade-lite (public, so never commit secrets). Submission is due ~3pm PT; score against `docs/context/judging.md`. The Arcade API key lives server-side in `ARCADE_API_KEY`.
 - **Arcade:** read `docs/context/arcade.md` first. Use the `arcade-api` skill for endpoint details and `arcade-api-test-drive` for key and safety rules.
 - **Process docs:** `docs/process/` holds the design principles, features, references, visual spec, anti-slop rules, voice and tone, research plan, and demo script. Sections still in template form mean "not yet defined": ask the human rather than inventing answers.
 - **Build order:** see `docs/context/arcade.md` § Build order. Do not start a step until the previous one works end to end.
