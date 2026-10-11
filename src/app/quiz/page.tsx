@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AuraCard } from "@/components/aura-card";
-import { encodeProfile, profileFromAnswers, saveProfile, type QuizAnswer } from "@/lib/profile";
+import { encodeProfile, personalize, profileFromAnswers, saveProfile, type QuizAnswer } from "@/lib/profile";
+import { ARCHETYPES } from "@/lib/quiz/archetypes";
 import { drawQuiz, fallbackQuiz, type AuraOption, type VibeQuestion } from "@/lib/quiz/bank";
 import { curatedVibe, type SonicVibe } from "@/lib/soundtrack";
 
@@ -22,6 +23,7 @@ export default function QuizPage() {
   const [listening, setListening] = useState(false);
   const [connectNote, setConnectNote] = useState(false);
   const [demo, setDemo] = useState(false);
+  const [writing, setWriting] = useState(false);
 
   // Draw after mount so server and client render the same first frame. ?demo=1 is always the same quiz.
   useEffect(() => {
@@ -33,6 +35,15 @@ export default function QuizPage() {
   }, []);
 
   if (!quiz) return <main className="flex-1" />;
+  if (writing) {
+    return (
+      <main className="mx-auto flex w-full max-w-xl flex-1 flex-col justify-center px-5" aria-live="polite">
+        <AuraCard colors={[...steps.flatMap((s) => (s.picked ? [s.picked.color] : [])), ...(vibe?.colors ?? [])]} keywords={[]} answered={steps.filter((s) => s.picked).length} total={quiz.length} music={Boolean(vibe)} />
+        <p className="mt-8 text-xs font-medium tracking-[0.2em] uppercase text-accent">Your stylist is writing</p>
+        <h1 className="mt-2 font-display text-[2.1rem] leading-[1.05] tracking-tight">Naming your style…</h1>
+      </main>
+    );
+  }
 
   const index = steps.length;
   const question = quiz[index];
@@ -40,9 +51,26 @@ export default function QuizPage() {
   const auraColors = [...picked.map((p) => p.color), ...(vibe?.colors ?? [])];
   const auraKeywords = [...picked.map((p) => p.keyword), ...(vibe?.keywords ?? [])];
 
-  function finish(all: Step[], sonic: SonicVibe | null = vibe) {
+  async function finish(all: Step[], sonic: SonicVibe | null = vibe) {
     const answers: QuizAnswer[] = all.flatMap((s) => (s.picked ? [{ questionId: s.question.id, optionId: s.picked.id }] : []));
-    const profile = profileFromAnswers(answers, sonic && music.trim() ? { text: music.trim(), vibe: sonic } : undefined);
+    let profile = profileFromAnswers(answers, sonic && music.trim() ? { text: music.trim(), vibe: sonic } : undefined);
+    // Step 3: Gemini writes a one-of-a-kind profile on top. Demo mode and outages keep the archetype.
+    if (!demo) {
+      setWriting(true);
+      const gen = await fetch("/api/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          archetype: profile.styleName,
+          secondary: ARCHETYPES[profile.secondaryId].name,
+          aura: auraKeywords,
+          music: music.trim(),
+        }),
+      })
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null);
+      if (gen?.styleName) profile = personalize(profile, gen);
+    }
     saveProfile(profile);
     router.push(`/profile?p=${encodeProfile(profile)}&new=1`);
   }

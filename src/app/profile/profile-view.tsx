@@ -13,8 +13,9 @@ export function ProfileView({ shared, code, isNew }: Props) {
   const ownRaw = useSyncExternalStore(subscribeProfile, readProfileRaw, () => null);
   const own = useMemo(() => parseProfile(ownRaw), [ownRaw]);
   // No share code in the URL: fall back to the profile saved on this device.
-  const profile = shared ?? own;
   const ownedCode = own ? encodeProfile(own) : null;
+  // Your own link: show your saved copy, which also has the design direction and music line.
+  const profile = shared && own && ownedCode === code ? own : (shared ?? own);
 
   if (!profile) {
     return (
@@ -62,6 +63,18 @@ export function ProfileView({ shared, code, isNew }: Props) {
         <p className="text-sm text-muted">{isOwner ? "You're a" : "They're a"}</p>
         <h1 className="mt-1 font-display text-[2.6rem] leading-[0.95] tracking-tight">{profile.styleName}</h1>
         <p className="mt-3 text-[1.05rem] leading-snug">{profile.tagline}</p>
+        {profile.designDirection && (
+          <p className="mt-4 border-l-2 border-accent pl-3 text-sm leading-snug">
+            <span className="font-semibold">We&rsquo;ll design: </span>
+            {profile.designDirection}
+          </p>
+        )}
+        {profile.soundtrack && (
+          <p className="mt-3 text-sm leading-snug text-muted">
+            <span aria-hidden>🎧 </span>
+            {profile.soundtrack.line}
+          </p>
+        )}
 
         <div className="mt-6 flex h-20 overflow-hidden rounded-xl border border-line">
           {profile.palette.map((swatch) => (

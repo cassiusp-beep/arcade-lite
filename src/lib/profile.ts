@@ -17,6 +17,8 @@ export type StyleProfile = {
   promptSeed: string;
   /** What they're listening to and how we read it (step 2, optional). */
   soundtrack?: { text: string; line: string; keywords: string[] };
+  /** Gemini's sideways read of their taste; leads the Arcade prompt (step 3, optional). */
+  designDirection?: string;
   createdAt: string;
 };
 
@@ -79,26 +81,67 @@ export function profileFromAnswers(answers: QuizAnswer[], music?: { text: string
   };
 }
 
-/* Share links carry only the archetype ids; everything else is rebuilt from ARCHETYPES. */
+/** Merge a Gemini-written profile (step 3) over the archetype profile. */
+export function personalize(
+  profile: StyleProfile,
+  gen: { styleName: string; tagline: string; keywords: string[]; designDirection: string },
+): StyleProfile {
+  return {
+    ...profile,
+    styleName: gen.styleName,
+    tagline: gen.tagline,
+    keywords: [gen.keywords[0], gen.keywords[1], gen.keywords[2]],
+    designDirection: gen.designDirection,
+    promptSeed: `${gen.designDirection}, ${profile.promptSeed}`,
+  };
+}
+
+/*
+ * Share links carry the archetype ids plus, for personalized profiles, the name, tagline and
+ * keywords. Everything else is rebuilt from ARCHETYPES. UTF-8 safe (names may have accents).
+ */
 
 function toBase64Url(s: string) {
-  return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  const bin = String.fromCharCode(...new TextEncoder().encode(s));
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
 function fromBase64Url(s: string) {
-  return atob(s.replace(/-/g, "+").replace(/_/g, "/"));
+  const bin = atob(s.replace(/-/g, "+").replace(/_/g, "/"));
+  return new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
 }
 
-export function encodeProfile(profile: Pick<StyleProfile, "archetypeId" | "secondaryId">): string {
-  return toBase64Url(JSON.stringify({ v: 1, a: profile.archetypeId, s: profile.secondaryId }));
+type Shareable = Pick<StyleProfile, "archetypeId" | "secondaryId"> & Partial<Pick<StyleProfile, "styleName" | "tagline" | "keywords">>;
+
+export function encodeProfile(profile: Shareable): string {
+  const custom = profile.styleName && profile.styleName !== ARCHETYPES[profile.archetypeId]?.name;
+  return toBase64Url(
+    JSON.stringify({
+      v: 1,
+      a: profile.archetypeId,
+      s: profile.secondaryId,
+      ...(custom ? { n: profile.styleName, t: profile.tagline, k: profile.keywords } : {}),
+    }),
+  );
 }
+
+const str = (v: unknown, max: number) => (typeof v === "string" && v.trim() ? v.trim().slice(0, max) : null);
 
 export function decodeProfile(code: string | null | undefined): StyleProfile | null {
   if (!code) return null;
   try {
-    const { a, s } = JSON.parse(fromBase64Url(code));
+    const { a, s, n, t, k } = JSON.parse(fromBase64Url(code));
     if (!(a in ARCHETYPES) || !(s in ARCHETYPES)) return null;
-    return buildProfile(a, s);
+    const base = buildProfile(a, s);
+    const name = str(n, 32);
+    const keywords = Array.isArray(k) ? k.map((x: unknown) => str(x, 18)).filter((x): x is string => Boolean(x)) : [];
+    if (!name) return base;
+    return {
+      ...base,
+      styleName: name,
+      tagline: str(t, 90) ?? base.tagline,
+      keywords: keywords.length === 3 ? [keywords[0], keywords[1], keywords[2]] : base.keywords,
+    };
   } catch {
     return null;
   }

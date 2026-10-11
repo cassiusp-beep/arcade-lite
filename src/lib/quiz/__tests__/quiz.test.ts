@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { ARCHETYPE_IDS } from "../archetypes";
 import { CELEBRITY_QUESTION_ID, QUESTIONS, START_QUESTION_ID } from "../questions";
-import { decodeProfile, encodeProfile, profileFromAnswers, type QuizAnswer } from "../../profile";
+import { buildProfile, decodeProfile, encodeProfile, personalize, profileFromAnswers, type QuizAnswer } from "../../profile";
 
 /** Every complete path through the quiz, as answer lists. */
 function allPaths(): QuizAnswer[][] {
@@ -65,5 +65,16 @@ describe("profile", () => {
     expect(decodeProfile("not-base64!!")).toBeNull();
     expect(decodeProfile(encodeProfile({ archetypeId: "nope" as never, secondaryId: "quiet-luxe" }))).toBeNull();
     expect(decodeProfile(undefined)).toBeNull();
+  });
+});
+
+describe("personalized share links", () => {
+  it("round-trips a Gemini-written name with accents and emoji-free keywords", () => {
+    const base = buildProfile("neon-maximalist", "sunlit-archivist");
+    const mine = personalize(base, { styleName: "Café Disco Archivist", tagline: "Glitter, but make it vintage.", keywords: ["Glossy", "Thrifted", "Loud"], designDirection: "Clashing retro stripes" });
+    const decoded = decodeProfile(encodeProfile(mine));
+    expect(decoded?.styleName).toBe("Café Disco Archivist");
+    expect(decoded?.keywords).toEqual(["Glossy", "Thrifted", "Loud"]);
+    expect(mine.promptSeed.startsWith("Clashing retro stripes")).toBe(true);
   });
 });
