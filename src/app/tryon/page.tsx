@@ -10,7 +10,7 @@ const WASM = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/wasm";
 const MODEL = "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task";
 
 // Face mesh landmark indices: cheek edges near the ears, jaw corners, chin, forehead.
-const L_EDGE = 234, R_EDGE = 454, L_JAW = 132, R_JAW = 361, CHIN = 152, FOREHEAD = 10;
+const L_EDGE = 234, R_EDGE = 454, L_JAW = 132, R_JAW = 361, CHIN = 152, FOREHEAD = 10, NOSE = 1;
 
 type Status = "idle" | "loading" | "live" | "error";
 type Point = { x: number; y: number };
@@ -218,20 +218,36 @@ function cropPiece(img: HTMLImageElement, kind: "earrings" | "necklace"): HTMLCa
   const out = document.createElement("canvas");
   out.width = Math.round((x1 - x0 + 1) * k);
   out.height = Math.round((y1 - y0 + 1) * k);
-  out.getContext("2d")!.drawImage(img, x0 * k, y0 * k, out.width, out.height, 0, 0, out.width, out.height);
+  const octx = out.getContext("2d", { willReadFrequently: true })!;
+  octx.drawImage(img, x0 * k, y0 * k, out.width, out.height, 0, 0, out.width, out.height);
+  // Key out the studio backdrop to real transparency (soft edge), so the metal keeps its true
+  // color on every skin tone. Multiply blending darkened gold on darker skin.
+  const px = octx.getImageData(0, 0, out.width, out.height);
+  const p = px.data;
+  for (let i = 0; i < p.length; i += 4) {
+    const diff = Math.abs(p[i] - bg[0]) + Math.abs(p[i + 1] - bg[1]) + Math.abs(p[i + 2] - bg[2]);
+    p[i + 3] = Math.max(0, Math.min(255, ((diff - 25) / 45) * 255));
+  }
+  octx.putImageData(px, 0, 0);
   return out;
 }
 
-/** Pin the cropped piece to the face. Multiply blending drops what's left of the studio backdrop. */
+/** Pin the cropped piece to the face. Ears hidden by a head turn get no earring. */
 function drawJewelry(ctx: CanvasRenderingContext2D, piece: HTMLCanvasElement, kind: "earrings" | "necklace", at: (i: number) => Point) {
   const faceW = dist(at(L_EDGE), at(R_EDGE));
   const aspect = piece.height / piece.width;
   ctx.save();
-  ctx.globalCompositeOperation = "multiply";
   if (kind === "earrings") {
-    const w = faceW * 0.09; // a stud is roughly a tenth of face width
-    const ears = [lerp(at(R_EDGE), at(R_JAW), 0.5), lerp(at(L_EDGE), at(L_JAW), 0.5)].sort((a, b) => a.x - b.x);
-    ears.forEach((ear, i) => {
+    const w = faceW * 0.11; // a stud is roughly a tenth of face width
+    // Head turn: the nose sits closer to the side of the face that's turning away.
+    const nose = at(NOSE);
+    const dR = dist(nose, at(R_EDGE)), dL = dist(nose, at(L_EDGE));
+    const ears = [
+      { p: lerp(at(R_EDGE), at(R_JAW), 0.5), visible: dR / (dL + dR) > 0.33 },
+      { p: lerp(at(L_EDGE), at(L_JAW), 0.5), visible: dL / (dL + dR) > 0.33 },
+    ].sort((a, b) => a.p.x - b.p.x);
+    ears.forEach(({ p: ear, visible }, i) => {
+      if (!visible) return;
       ctx.save();
       ctx.translate(ear.x + (i === 0 ? -1 : 1) * w * 0.35, ear.y);
       if (i === 1) ctx.scale(-1, 1); // mirror for the other ear
