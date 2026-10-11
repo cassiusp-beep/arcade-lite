@@ -14,8 +14,8 @@ Gen Z shoppers who are chronically online, know what they like when they see it,
 2. **Soundtrack.** Type an artist or playlist. Gemini reads the music into colors, keywords and a one-line vibe that shifts your style. (Spotify / Apple Music connect is shown as a concept.)
 3. **Style profile.** A shareable card: style name, palette, keywords, and what your music says about you.
 4. **Design with Arcade.** Pick a pillow, curtains, duvet, lampshade or a piece of jewelry. Your profile becomes the Arcade prompt, and you get a real made-to-order product with its price.
-5. **See it.** A 3D model built from the product's real options (size, piping, tassels, velvet), then **AR Quick Look** on iPhone to place it in your room. No app install.
-6. **Your light.** An isometric room builds itself as you answer: point your phone's compass at your window, tell us how bright it gets, pick your wall color, and see your print at year 1, 3 and 5 in that light.
+5. **See it.** A 3D model built from the product's real options (size, piping, tassels, velvet), then **AR Quick Look** on iPhone to place it in your room. No app install. For jewelry: **live face try-on** in the browser (MediaPipe face tracking pins the real Arcade piece to your ears or neck; snap and share).
+6. **Your light.** An isometric room builds itself as you answer: your location (used once, on the phone) and your phone's compass pointed at your window feed SunCalc's hours of direct sun; add brightness, time spent in the room and wall color, and see your print at year 1, 3 and 5 in that light. **Make it last** asks Arcade to recolor it into a sun-smart colorway and rebuilds it as the same product.
 7. **Checkout** on Arcade.
 
 Plus **in-store inspiration**: scan a barcode and snap something you love in a store; it becomes an Arcade reference that steers your next design.
@@ -30,6 +30,8 @@ Plus **in-store inspiration**: scan a barcode and snap something you love in a s
 | 3D / AR | Models are generated from `selections` and the print is placed the way Arcade prints it, so the 3D and AR match the product photo |
 | Checkout | `checkouts/create` with `dropShip: true` → Arcade checkout page |
 | Inspiration | `references/createUpload` → upload → `references/create` → `referenceIds` on the next design |
+| Make it last | `patterns/refine/recolorClusters` → softened colors → `patterns/refine/recolor` → `categories/get` + `products/create` (same options, crop `fit`) |
+| Jewelry | `patterns/create` with a jewelry `categoryId` designs and builds the piece in one job |
 
 All Arcade and Gemini calls run server-side in Next.js route handlers (`src/app/api/*`). No keys ever reach the browser.
 
@@ -44,7 +46,7 @@ npm test                     # quiz, profile, soundtrack and light-model tests
 
 ## Stack
 
-Next.js 16 (App Router) · TypeScript · Tailwind 4 · `<model-viewer>` + three.js (3D and AR Quick Look) · anime.js (room and aura animation) · Gemini (quiz bank and music read) · zxing (barcodes) · Vercel.
+Next.js 16 (App Router) · TypeScript · Tailwind 4 · `<model-viewer>` + three.js (3D and AR Quick Look) · MediaPipe Face Landmarker (try-on) · SunCalc (sun hours) · anime.js (room and aura animation) · Gemini (quiz bank, music read, style profile) · zxing (barcodes) · Vercel.
 
 ## Project docs
 
