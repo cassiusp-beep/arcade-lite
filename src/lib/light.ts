@@ -45,8 +45,8 @@ export function lightAdvice(room: RoomLight, productName: string): string {
   if (room.facing === "north")
     return `North light is soft and cool, so warm tones will read a little muted by day. Your ${item} will glow under a warm bulb at night.`;
   if (level === "medium")
-    return `Good light without much direct sun. Your ${item} should hold its color for years, with the most fading on the side facing the window.`;
-  return `Gentle light, so your ${item} will keep its color for a long time. Deep shades may look darker than on screen, so add a lamp nearby.`;
+    return `Good light without much direct sun. Your ${item} should hold their color for years, with the most fading on the side facing the window.`;
+  return `Gentle light, so your ${item} will keep their color for a long time. Deep shades may look darker than on screen, so add a lamp nearby.`;
 }
 
 /**
