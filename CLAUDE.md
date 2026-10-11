@@ -23,7 +23,7 @@ Cassius likes the current build: **extend it, don't rebuild or restyle it.** Wor
 
 | # | Step | Status | Where |
 |---|---|---|---|
-| 1 | Vibe check: 10 generated Y2K/pop-culture questions, live aura card, skippable | **Done (2:05pm).** Gemini-written bank of 30 everyday-life questions (`scripts/gen-quiz-bank.mjs`, re-run to refresh); each quiz = Saturday + windowsill anchors + 8 random distinct topics; live aura card; skip question / skip quiz; `?demo=1` = fixed seed. Testers: keep it niche and real-life, no abstract or celebrity questions | `/quiz`, `src/lib/quiz/bank.ts`, `bank.json`, `src/components/aura-card.tsx` |
+| 1 | Vibe check: 10 generated Y2K/pop-culture questions, live aura card, skippable | **Done (1:52pm).** Gemini-written bank of 30 everyday-life questions (`scripts/gen-quiz-bank.mjs`, re-run to refresh); each quiz = Saturday + windowsill anchors + 8 random distinct topics; live aura card; skip question / skip quiz; `?demo=1` = fixed seed. Testers: keep it niche and real-life, no abstract or celebrity questions | `/quiz`, `src/lib/quiz/bank.ts`, `bank.json`, `src/components/aura-card.tsx` |
 | 2 | Soundtrack: 1–2 artists or a playlist; Spotify/Apple Music buttons are visual only | Not started | none yet |
 | 3 | Style profile: quiz + music → name, palette, keywords, design direction; shareable | Card, share link, OG image exist | `/profile`, `src/lib/profile.ts`, `/api/card` |
 | 4 | The ask: "what, and where in your space" + Surprise me (voice is a stretch) | Category grid + idea text exist | `/design`, `buildPrompt` in `src/lib/catalog.ts` |
